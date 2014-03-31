@@ -4,12 +4,19 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import java.util.List;
 
 
 public class DemoList extends ActionBarActivity {
 
     ListView listView;
+
+    DatabaseHandler databaseHandler;
+
+    CharactersAdapter charactersAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +24,17 @@ public class DemoList extends ActionBarActivity {
         setContentView(R.layout.activity_demo_list);
 
         listView = (ListView) findViewById(R.id.characters_list);
+
+        databaseHandler = new DatabaseHandler(this);
+
+        databaseHandler.addCharacter(new Character(1, "Pablo", "PPP"));
+
+        List<Character> characterList = databaseHandler.getAllCharacters();
+
+        charactersAdapter = new CharactersAdapter(this);
+        charactersAdapter.updateList(characterList);
+
+        listView.setAdapter(charactersAdapter);
     }
 
 
