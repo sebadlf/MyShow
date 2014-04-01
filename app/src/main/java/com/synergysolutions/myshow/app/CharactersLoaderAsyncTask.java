@@ -30,7 +30,7 @@ public class CharactersLoaderAsyncTask extends AsyncTask<Void, Integer, List<Cha
     @Override
     protected void onPostExecute(List<Character> result) {
 
-        charactersAdapter.updateCharactersList(result);
+        charactersAdapter.updateList(result);
     }
 
 

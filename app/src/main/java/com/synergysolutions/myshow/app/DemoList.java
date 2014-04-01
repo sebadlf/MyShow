@@ -29,12 +29,9 @@ public class DemoList extends ActionBarActivity {
 
         databaseHandler.addCharacter(new Character(1, "Pablo", "PPP"));
 
-        List<Character> characterList = databaseHandler.getAllCharacters();
-
         charactersAdapter = new CharactersAdapter(this);
-        charactersAdapter.updateList(characterList);
 
-        listView.setAdapter(charactersAdapter);
+        new CharactersLoaderAsyncTask(this, this.charactersAdapter).execute();
     }
 
 
