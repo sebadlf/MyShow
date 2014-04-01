@@ -43,4 +43,6 @@ public class Character {
     public void setAlias(String alias) {
         this.alias = alias;
     }
+
+
 }

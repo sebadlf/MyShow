@@ -5,10 +5,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Created by sebadlf on 30/03/14.
  */
 public class CharactersAdapter extends BaseAdapter {
+
+    private List<Character> charactersList = Collections.emptyList();
 
     private Context context;
 
@@ -16,19 +21,27 @@ public class CharactersAdapter extends BaseAdapter {
         this.context = context;
     }
 
+    public void updateCharactersList(List<Character> charactersList){
+        this.charactersList = charactersList;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
-        return 0;
+        return charactersList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return charactersList.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+
+        Character character = (Character)this.getItem(position);
+
+        return character != null ? character.getId() : null;
     }
 
     @Override
