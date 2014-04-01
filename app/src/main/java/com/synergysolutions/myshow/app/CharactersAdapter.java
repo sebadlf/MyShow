@@ -63,6 +63,7 @@ public class CharactersAdapter extends BaseAdapter {
         txtAlias.setText(character.getAlias());
 
         return convertView;
+
     }
 
 
