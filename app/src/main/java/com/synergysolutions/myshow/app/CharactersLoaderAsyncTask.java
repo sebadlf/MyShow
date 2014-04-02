@@ -11,10 +11,10 @@ import java.util.List;
  */
 public class CharactersLoaderAsyncTask extends AsyncTask<Void, Integer, List<Character>> {
 
-    private DemoList context;
+    private Context context;
     private CharactersAdapter charactersAdapter;
 
-    public CharactersLoaderAsyncTask(DemoList context, CharactersAdapter charactersAdapter) {
+    public CharactersLoaderAsyncTask(Context context, CharactersAdapter charactersAdapter) {
         this.context = context;
         this.charactersAdapter = charactersAdapter;
     }
@@ -32,7 +32,6 @@ public class CharactersLoaderAsyncTask extends AsyncTask<Void, Integer, List<Cha
 
         charactersAdapter.updateList(result);
     }
-
 
     /*
 
