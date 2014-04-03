@@ -25,9 +25,11 @@ public class DownloaderAsyncTask extends AsyncTask<String, Integer, DownloadResu
 
     private static final int TIME_OUT = 1000;
 
+    int requestCode;
     IDownloadResultProcessor downloadResultProcessor;
 
-    public DownloaderAsyncTask(IDownloadResultProcessor downloadResultProcessor) {
+    public DownloaderAsyncTask(int requestCode, IDownloadResultProcessor downloadResultProcessor) {
+        this.requestCode = requestCode;
         this.downloadResultProcessor = downloadResultProcessor;
     }
 
@@ -58,7 +60,7 @@ public class DownloaderAsyncTask extends AsyncTask<String, Integer, DownloadResu
                 httpUrlConnection.disconnect();
         }
 
-        return new DownloadResult(resultCode, resultBody);
+        return new DownloadResult(this.requestCode, resultCode, resultBody);
     }
 
     @Override

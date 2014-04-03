@@ -7,18 +7,31 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
-public class DemoList extends ActionBarActivity implements IDownloadResultProcessor, IArticlesJsonResultProcessor {
+public class DemoList extends ActionBarActivity implements IDownloadResultProcessor, IArticlesJsonResultProcessor, IArticlesLoadedResultProcessor, IArticlesDetailsLoadedResultProcessor {
+
+    int REQUEST_CODE_ARTICLES = 1;
+
+    int REQUEST_CODE_ARTICLE_DETAILS = 2;
 
     ListView listView;
+
+    List<Article> articlesWithoutDetails;
 
     DatabaseHandler databaseHandler;
 
     ArticlesAdapter articlesAdapter;
 
-   private static final String URL = "http://agentsofshield.wikia.com/api/v1/Articles/List?limit=1000000";
+    private static final String URL = "http://agentsofshield.wikia.com/api/v1/Articles/List?limit=1000000";
+    private static final String URL_DETAILS = "http://agentsofshield.wikia.com/api/v1/Articles/Details?ids=%s&abstract=500&width=200&height=200";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,15 +43,20 @@ public class DemoList extends ActionBarActivity implements IDownloadResultProces
         articlesAdapter = new ArticlesAdapter(this);
         listView.setAdapter(articlesAdapter);
 
-        Toast.makeText(this, "Download Data", Toast.LENGTH_LONG).show();
+        if (new DatabaseHandler(this).getArticlesCount() > 0) {
 
-        new DownloaderAsyncTask(this).execute(URL);
+            new ArticlesLoaderAsyncTask(this).execute();
+
+        } else {
+            Toast.makeText(this, "Download Data", Toast.LENGTH_LONG).show();
+
+            new DownloaderAsyncTask(REQUEST_CODE_ARTICLES, this).execute(URL);
+        }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.demo_list, menu);
         return true;
@@ -61,9 +79,45 @@ public class DemoList extends ActionBarActivity implements IDownloadResultProces
 
         //Toast.makeText(this, downloadResult.getResultBody(), Toast.LENGTH_LONG).show();;
 
-        Toast.makeText(this, "Parsing Data", Toast.LENGTH_LONG).show();
+        if (downloadResult.getRequestCode() == REQUEST_CODE_ARTICLES) {
 
-        new ArticlesJsonAsyncTaskAsyncTask(this).execute(downloadResult.getResultBody());
+            Toast.makeText(this, "Parsing Data", Toast.LENGTH_LONG).show();
+
+            new ArticlesJsonAsyncTaskAsyncTask(this).execute(downloadResult.getResultBody());
+
+        } else if (downloadResult.getRequestCode() == REQUEST_CODE_ARTICLE_DETAILS) {
+
+            try {
+                JSONObject responseObject = (JSONObject) new JSONTokener(downloadResult.getResultBody()).nextValue();
+
+                JSONObject items = responseObject.getJSONObject("items");
+
+                Article article = this.articlesWithoutDetails.get(0);
+
+                JSONObject item = (JSONObject) items.getJSONObject(String.valueOf(article.getWikiaId()));
+
+                article.setAbstractDesc(item.getString("abstract"));
+                article.setDetailsDownloaded(true);
+
+                new DatabaseHandler(this).saveArticle(article);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            this.articlesWithoutDetails.remove(0);
+
+            if (this.articlesWithoutDetails.size() > 0) {
+
+                Article article = this.articlesWithoutDetails.get(0);
+
+                String url = String.format(URL_DETAILS, article.getWikiaId());
+
+                new DownloaderAsyncTask(REQUEST_CODE_ARTICLE_DETAILS, this).execute(url);
+
+            }
+
+        }
 
         return null;
     }
@@ -75,14 +129,41 @@ public class DemoList extends ActionBarActivity implements IDownloadResultProces
 
         databaseHandler = new DatabaseHandler(this);
 
-        for (Article article : articleList){
-            databaseHandler.addArticle(article);
+        for (Article article : articleList) {
+            databaseHandler.saveArticle(article);
         }
 
         Toast.makeText(this, "Data Inserts Done", Toast.LENGTH_LONG).show();
 
-        new ArticlesLoaderAsyncTask(this, this.articlesAdapter).execute();
+        new ArticlesLoaderAsyncTask(this).execute();
 
         return null;
     }
+
+    @Override
+    public void OnArticlesLoadedResultFinish(List<Article> result) {
+
+        articlesAdapter.updateList(result);
+
+        new ArticlesDetailsUpdaterAsyncTask(this).execute();
+
+    }
+
+    @Override
+    public void OnArticlesDetailsLoadedResultFinish(List<Article> result) {
+
+        if (result.size() > 0) {
+
+            this.articlesWithoutDetails = result;
+
+            Article article = this.articlesWithoutDetails.get(0);
+
+            String url = String.format(URL_DETAILS, article.getWikiaId());
+
+            new DownloaderAsyncTask(REQUEST_CODE_ARTICLE_DETAILS, this).execute(url);
+
+        }
+
+    }
+
 }

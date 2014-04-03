@@ -7,11 +7,14 @@ import org.apache.http.HttpResponse;
  */
 public class DownloadResult {
 
+    int requestCode;
+
     int resultCode;
 
     String resultBody;
 
-    public DownloadResult(int resultCode, String resultBody) {
+    public DownloadResult(int requestCode, int resultCode, String resultBody) {
+        this.requestCode = requestCode;
         this.resultCode = resultCode;
         this.resultBody = resultBody;
     }
@@ -30,5 +33,13 @@ public class DownloadResult {
 
     public void setResultBody(String resultBody) {
         this.resultBody = resultBody;
+    }
+
+    public int getRequestCode() {
+        return requestCode;
+    }
+
+    public void setRequestCode(int requestCode) {
+        this.requestCode = requestCode;
     }
 }

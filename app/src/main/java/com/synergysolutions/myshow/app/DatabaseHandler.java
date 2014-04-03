@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String ARTICLE_ABSTRACT = "abstract";
     private static final String ARTICLE_THUMBNAIL = "thumbnail";
     private static final String ARTICLE_ORIGINAL_DIMENSIONS = "original_dimensions";
+    private static final String ARTICLE_DETAILS_DOWNLOADED = "detailsDownloaded";
+
 
     // Article Table Columns names
     private static final String SECTION_ID = "_id";
@@ -61,6 +64,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + ARTICLE_TYPE + " TEXT,"
                 + ARTICLE_ABSTRACT + " TEXT,"
                 + ARTICLE_THUMBNAIL + " TEXT,"
+                + ARTICLE_DETAILS_DOWNLOADED + " BOOLEAN,"
                 + ARTICLE_ORIGINAL_DIMENSIONS + " TEXT"
                 + ")";
 
@@ -92,7 +96,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      */
 
     // Adding new character
-    void addArticle(Article article) {
+    void saveArticle(Article article) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -105,8 +109,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(ARTICLE_THUMBNAIL, article.getThumbnail());
         values.put(ARTICLE_ORIGINAL_DIMENSIONS, article.getOriginalDimensions());
 
-        // Inserting Row
-        db.insert(TABLE_ARTICLE, null, values);
+        values.put(ARTICLE_DETAILS_DOWNLOADED, article.isDetailsDownloaded());
+
+        if (article.getId() == 0){
+            db.insert(TABLE_ARTICLE, null, values);
+        } else {
+            db.update(TABLE_ARTICLE, values, ARTICLE_ID + "= ?",  new String[] { String.valueOf(article.getId()) });
+        }
+
         db.close(); // Closing database connection
     }
 
@@ -117,7 +127,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_ARTICLE;
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         // looping through all rows and adding to list
@@ -143,6 +153,54 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // return character list
         return articleList;
+    }
+
+    // Getting single character
+    List<Article> getAllArticlesWithoutDetails() {
+
+        List<Article> articleList = new ArrayList<Article>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_ARTICLE + " where " + ARTICLE_DETAILS_DOWNLOADED + " != 1";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Article article = new Article();
+
+                article.setId(cursor.getInt(cursor.getColumnIndex(ARTICLE_ID)));
+                article.setWikiaId(cursor.getInt(cursor.getColumnIndex(ARTICLE_WIKIA_ID)));
+
+                article.setTitle(cursor.getString(cursor.getColumnIndex(ARTICLE_TITLE)));
+                article.setUrl(cursor.getString(cursor.getColumnIndex(ARTICLE_URL)));
+                article.setType(cursor.getString(cursor.getColumnIndex(ARTICLE_TYPE)));
+                article.setAbstractDesc(cursor.getString(cursor.getColumnIndex(ARTICLE_ABSTRACT)));
+
+                article.setThumbnail(cursor.getString(cursor.getColumnIndex(ARTICLE_THUMBNAIL)));
+                article.setOriginalDimensions(cursor.getString(cursor.getColumnIndex(ARTICLE_ORIGINAL_DIMENSIONS)));
+
+                article.setDetailsDownloaded(Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(ARTICLE_DETAILS_DOWNLOADED))));
+
+                // Adding character to list
+                articleList.add(article);
+            } while (cursor.moveToNext());
+        }
+
+        // return character list
+        return articleList;
+    }
+
+
+    long getArticlesCount() {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String sql = "SELECT COUNT(*) FROM " + TABLE_ARTICLE;
+        SQLiteStatement statement = db.compileStatement(sql);
+        long count = statement.simpleQueryForLong();
+        return count;
     }
 
     /*

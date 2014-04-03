@@ -60,7 +60,7 @@ public class ArticlesAdapter extends BaseAdapter {
         txtNombre.setText(article.getTitle());
 
         TextView txtAlias = (TextView) convertView.findViewById(R.id.alias);
-        txtAlias.setText(article.getUrl());
+        txtAlias.setText(article.getAbstractDesc());
 
         return convertView;
 

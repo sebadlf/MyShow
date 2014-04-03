@@ -11,18 +11,16 @@ import java.util.List;
  */
 public class ArticlesLoaderAsyncTask extends AsyncTask<Void, Integer, List<Article>> {
 
-    private Context context;
-    private ArticlesAdapter articlesAdapter;
+    private IArticlesLoadedResultProcessor articlesLoadedResultProcessor;
 
-    public ArticlesLoaderAsyncTask(Context context, ArticlesAdapter articlesAdapter) {
-        this.context = context;
-        this.articlesAdapter = articlesAdapter;
+    public ArticlesLoaderAsyncTask(IArticlesLoadedResultProcessor articlesLoadedResultProcessor) {
+        this.articlesLoadedResultProcessor = articlesLoadedResultProcessor;
     }
 
     @Override
     protected List<Article> doInBackground(Void... params) {
 
-        DatabaseHandler db = new DatabaseHandler(this.context);
+        DatabaseHandler db = new DatabaseHandler((Context)this.articlesLoadedResultProcessor);
 
         return db.getAllArticles();
     }
@@ -30,7 +28,8 @@ public class ArticlesLoaderAsyncTask extends AsyncTask<Void, Integer, List<Artic
     @Override
     protected void onPostExecute(List<Article> result) {
 
-        articlesAdapter.updateList(result);
+        this.articlesLoadedResultProcessor.OnArticlesLoadedResultFinish(result);
+
     }
 
     /*

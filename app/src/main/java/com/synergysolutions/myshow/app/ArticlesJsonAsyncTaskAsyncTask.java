@@ -37,6 +37,7 @@ public class ArticlesJsonAsyncTaskAsyncTask extends AsyncTask<String, Integer, L
                 JSONObject item = (JSONObject) items.get(idx);
 
                 Article article = new Article();
+                article.setWikiaId(item.getInt("id"));
                 article.setTitle(item.getString("title"));
                 article.setUrl(item.getString("url"));
                 result.add(article);
@@ -45,6 +46,7 @@ public class ArticlesJsonAsyncTaskAsyncTask extends AsyncTask<String, Integer, L
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         return result;
     }
 
