@@ -19,15 +19,30 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     // Database Name
-    private static final String DATABASE_NAME = "charactersManager";
+    private static final String DATABASE_NAME = "MyShow";
 
     // Characters table name
-    private static final String TABLE_CHARACTERS = "characters";
+    private static final String TABLE_ARTICLE = "Article";
+    private static final String TABLE_SECTION = "Section";
+    private static final String TABLE_SECTION_CONTENT = "SectionContent";
+    private static final String TABLE_LIST_ELEMENT = "ListElement";
+    private static final String TABLE_SECTION_IMAGES = "SectionImages";
 
-    // Characters Table Columns names
-    private static final String KEY_ID = "id";
-    private static final String KEY_NAME = "name";
-    private static final String KEY_ALIAS = "alias";
+    // Article Table Columns names
+    private static final String ARTICLE_ID = "_id";
+    private static final String ARTICLE_WIKIA_ID = "wikiaId";
+    private static final String ARTICLE_TITLE = "title";
+    private static final String ARTICLE_URL = "url";
+    private static final String ARTICLE_TYPE = "type";
+    private static final String ARTICLE_ABSTRACT = "abstract";
+    private static final String ARTICLE_THUMBNAIL = "thumbnail";
+    private static final String ARTICLE_ORIGINAL_DIMENSIONS = "original_dimensions";
+
+    // Article Table Columns names
+    private static final String SECTION_ID = "_id";
+    private static final String SECTION_ARTICLE_ID = "articleId";
+    private static final String SECTION_TITLE = "title";
+    private static final String SECTION_LEVEL = "level";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -36,20 +51,37 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Creating Tables
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_CHARACTERS_TABLE = "CREATE TABLE " + TABLE_CHARACTERS
+
+        String CREATE_ARTICLE_TABLE = "CREATE TABLE " + TABLE_ARTICLE
                 + "("
-                + KEY_ID + " INTEGER PRIMARY KEY,"
-                + KEY_NAME + " TEXT,"
-                + KEY_ALIAS + " TEXT"
+                + ARTICLE_ID + " INTEGER PRIMARY KEY,"
+                + ARTICLE_WIKIA_ID + " INTEGER,"
+                + ARTICLE_TITLE + " TEXT,"
+                + ARTICLE_URL + " TEXT,"
+                + ARTICLE_TYPE + " TEXT,"
+                + ARTICLE_ABSTRACT + " TEXT,"
+                + ARTICLE_THUMBNAIL + " TEXT,"
+                + ARTICLE_ORIGINAL_DIMENSIONS + " TEXT"
                 + ")";
-        db.execSQL(CREATE_CHARACTERS_TABLE);
+
+        String CREATE_SECTION_TABLE = "CREATE TABLE " + TABLE_SECTION
+                + "("
+                + SECTION_ID + " INTEGER PRIMARY KEY,"
+                + SECTION_ARTICLE_ID + " INTEGER REFERENCES " + TABLE_ARTICLE + "(" + ARTICLE_ID + "),"
+                + SECTION_TITLE + " TEXT,"
+                + SECTION_LEVEL + " TEXT"
+                + ")";
+
+        db.execSQL(CREATE_ARTICLE_TABLE);
+        db.execSQL(CREATE_SECTION_TABLE);
     }
 
     // Upgrading database
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CHARACTERS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SECTION);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ARTICLE);
 
         // Create tables again
         onCreate(db);
@@ -59,6 +91,61 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * All CRUD(Create, Read, Update, Delete) Operations
      */
 
+    // Adding new character
+    void addArticle(Article article) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put(ARTICLE_WIKIA_ID, article.getWikiaId());
+        values.put(ARTICLE_TITLE, article.getTitle());
+        values.put(ARTICLE_URL, article.getUrl());
+        values.put(ARTICLE_TYPE, article.getTitle());
+        values.put(ARTICLE_ABSTRACT, article.getAbstractDesc());
+        values.put(ARTICLE_THUMBNAIL, article.getThumbnail());
+        values.put(ARTICLE_ORIGINAL_DIMENSIONS, article.getOriginalDimensions());
+
+        // Inserting Row
+        db.insert(TABLE_ARTICLE, null, values);
+        db.close(); // Closing database connection
+    }
+
+    // Getting single character
+    List<Article> getAllArticles() {
+
+        List<Article> articleList = new ArrayList<Article>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_ARTICLE;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Article article = new Article();
+
+                article.setId(cursor.getInt(cursor.getColumnIndex(ARTICLE_ID)));
+                article.setWikiaId(cursor.getInt(cursor.getColumnIndex(ARTICLE_WIKIA_ID)));
+
+                article.setTitle(cursor.getString(cursor.getColumnIndex(ARTICLE_TITLE)));
+                article.setUrl(cursor.getString(cursor.getColumnIndex(ARTICLE_URL)));
+                article.setType(cursor.getString(cursor.getColumnIndex(ARTICLE_TYPE)));
+                article.setAbstractDesc(cursor.getString(cursor.getColumnIndex(ARTICLE_ABSTRACT)));
+
+                article.setThumbnail(cursor.getString(cursor.getColumnIndex(ARTICLE_THUMBNAIL)));
+                article.setOriginalDimensions(cursor.getString(cursor.getColumnIndex(ARTICLE_ORIGINAL_DIMENSIONS)));
+
+                // Adding character to list
+                articleList.add(article);
+            } while (cursor.moveToNext());
+        }
+
+        // return character list
+        return articleList;
+    }
+
+    /*
     // Adding new character
     void addCharacter(Character character) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -144,4 +231,5 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // return count
         return cursor.getCount();
     }
+    */
 }

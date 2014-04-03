@@ -14,38 +14,38 @@ import java.util.List;
 /**
  * Created by sebadlf on 30/03/14.
  */
-public class CharactersAdapter extends BaseAdapter {
+public class ArticlesAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
 
-    private List<Character> characterList = Collections.EMPTY_LIST;
+    private List<Article> articleList = Collections.EMPTY_LIST;
 
     private Context context;
 
-    public CharactersAdapter(Context context){
+    public ArticlesAdapter(Context context){
         this.context = context;
 
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public void updateList(List<Character> characterList) {
-        this.characterList = characterList;
+    public void updateList(List<Article> articleList) {
+        this.articleList = articleList;
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return characterList.size();
+        return articleList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return characterList.get(position);
+        return articleList.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return ((Character)this.getItem(position)).getId();
+        return ((Article)this.getItem(position)).getId();
     }
 
     @Override
@@ -54,13 +54,13 @@ public class CharactersAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.activity_demo_list_row, null);
         }
 
-        Character character = (Character)this.getItem(position);
+        Article article = (Article)this.getItem(position);
 
         TextView txtNombre = (TextView) convertView.findViewById(R.id.nombre);
-        txtNombre.setText(character.getName());
+        txtNombre.setText(article.getTitle());
 
         TextView txtAlias = (TextView) convertView.findViewById(R.id.alias);
-        txtAlias.setText(character.getAlias());
+        txtAlias.setText(article.getUrl());
 
         return convertView;
 

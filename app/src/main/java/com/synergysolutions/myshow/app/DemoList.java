@@ -4,24 +4,21 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.List;
 
 
-public class DemoList extends ActionBarActivity implements IDownloadResultProcessor {
+public class DemoList extends ActionBarActivity implements IDownloadResultProcessor, IArticlesJsonResultProcessor {
 
     ListView listView;
 
     DatabaseHandler databaseHandler;
 
-    CharactersAdapter charactersAdapter;
+    ArticlesAdapter articlesAdapter;
 
-    private static final String USER_NAME = "aporter";
-    private static final String URL = "http://api.geonames.org/earthquakesJSON?north=44.1&south=-9.9&east=-22.4&west=55.2&username="
-            + USER_NAME;
+   private static final String URL = "http://agentsofshield.wikia.com/api/v1/Articles/List?limit=1000000";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,14 +27,10 @@ public class DemoList extends ActionBarActivity implements IDownloadResultProces
 
         listView = (ListView) findViewById(R.id.characters_list);
 
-        databaseHandler = new DatabaseHandler(this);
+        articlesAdapter = new ArticlesAdapter(this);
+        listView.setAdapter(articlesAdapter);
 
-        databaseHandler.addCharacter(new Character(1, "Pablo", "PPP"));
-
-        charactersAdapter = new CharactersAdapter(this);
-        listView.setAdapter(charactersAdapter);
-
-        //new CharactersLoaderAsyncTask(this, this.charactersAdapter).execute();
+        Toast.makeText(this, "Download Data", Toast.LENGTH_LONG).show();
 
         new DownloaderAsyncTask(this).execute(URL);
     }
@@ -66,7 +59,29 @@ public class DemoList extends ActionBarActivity implements IDownloadResultProces
     @Override
     public DownloadResult OnDownloadFinish(DownloadResult downloadResult) {
 
-        Toast.makeText(this, downloadResult.getResultBody(), Toast.LENGTH_LONG).show();;
+        //Toast.makeText(this, downloadResult.getResultBody(), Toast.LENGTH_LONG).show();;
+
+        Toast.makeText(this, "Parsing Data", Toast.LENGTH_LONG).show();
+
+        new ArticlesJsonAsyncTaskAsyncTask(this).execute(downloadResult.getResultBody());
+
+        return null;
+    }
+
+    @Override
+    public DownloadResult OnArticlesJsonResultFinish(List<Article> articleList) {
+
+        Toast.makeText(this, "Data Inserts", Toast.LENGTH_LONG).show();
+
+        databaseHandler = new DatabaseHandler(this);
+
+        for (Article article : articleList){
+            databaseHandler.addArticle(article);
+        }
+
+        Toast.makeText(this, "Data Inserts Done", Toast.LENGTH_LONG).show();
+
+        new ArticlesLoaderAsyncTask(this, this.articlesAdapter).execute();
 
         return null;
     }

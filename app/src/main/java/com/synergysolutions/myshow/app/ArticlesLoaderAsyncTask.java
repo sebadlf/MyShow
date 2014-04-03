@@ -9,28 +9,28 @@ import java.util.List;
 /**
  * Created by sebadlf on 31/03/14.
  */
-public class CharactersLoaderAsyncTask extends AsyncTask<Void, Integer, List<Character>> {
+public class ArticlesLoaderAsyncTask extends AsyncTask<Void, Integer, List<Article>> {
 
     private Context context;
-    private CharactersAdapter charactersAdapter;
+    private ArticlesAdapter articlesAdapter;
 
-    public CharactersLoaderAsyncTask(Context context, CharactersAdapter charactersAdapter) {
+    public ArticlesLoaderAsyncTask(Context context, ArticlesAdapter articlesAdapter) {
         this.context = context;
-        this.charactersAdapter = charactersAdapter;
+        this.articlesAdapter = articlesAdapter;
     }
 
     @Override
-    protected List<Character> doInBackground(Void... params) {
+    protected List<Article> doInBackground(Void... params) {
 
         DatabaseHandler db = new DatabaseHandler(this.context);
 
-        return db.getAllCharacters();
+        return db.getAllArticles();
     }
 
     @Override
-    protected void onPostExecute(List<Character> result) {
+    protected void onPostExecute(List<Article> result) {
 
-        charactersAdapter.updateList(result);
+        articlesAdapter.updateList(result);
     }
 
     /*
