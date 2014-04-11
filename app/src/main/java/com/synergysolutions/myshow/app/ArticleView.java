@@ -22,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.synergysolutions.myshow.app.Entity.Article;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.util.regex.Pattern;
@@ -69,7 +71,7 @@ public class ArticleView extends ActionBarActivity {
 
         descriptionTextView = new TextView(this);
 
-        descriptionTextView.setText(article.getAbstractDesc());
+        descriptionTextView.setText(article.getTeaser());
 
         myLayout.addView(descriptionTextView);
 

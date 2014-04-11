@@ -321,7 +321,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         ARTICLE_TITLE,
                         ARTICLE_URL,
                         ARTICLE_TYPE,
-                        ARTICLE_ABSTRACT,
+                        ARTICLE_TEASER,
                         ARTICLE_THUMBNAIL,
                         ARTICLE_ORIGINAL_DIMENSIONS,
                 }, ARTICLE_ID + "=?",
@@ -337,8 +337,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         article.setTitle(cursor.getString(cursor.getColumnIndex(ARTICLE_TITLE)));
         article.setUrl(cursor.getString(cursor.getColumnIndex(ARTICLE_URL)));
-        article.setType(cursor.getString(cursor.getColumnIndex(ARTICLE_TYPE)));
-        article.setAbstractDesc(cursor.getString(cursor.getColumnIndex(ARTICLE_ABSTRACT)));
+        article.setArticleType(cursor.getString(cursor.getColumnIndex(ARTICLE_TYPE)));
+        article.setTeaser(cursor.getString(cursor.getColumnIndex(ARTICLE_TEASER)));
 
         article.setThumbnail(cursor.getString(cursor.getColumnIndex(ARTICLE_THUMBNAIL)));
         article.setOriginalDimensions(cursor.getString(cursor.getColumnIndex(ARTICLE_ORIGINAL_DIMENSIONS)));
@@ -356,7 +356,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         ARTICLE_TITLE,
                         ARTICLE_URL,
                         ARTICLE_TYPE,
-                        ARTICLE_ABSTRACT,
+                        ARTICLE_TEASER,
                         ARTICLE_THUMBNAIL,
                         ARTICLE_ORIGINAL_DIMENSIONS,
                 }, ARTICLE_TITLE + "=?",
@@ -372,8 +372,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         article.setTitle(cursor.getString(cursor.getColumnIndex(ARTICLE_TITLE)));
         article.setUrl(cursor.getString(cursor.getColumnIndex(ARTICLE_URL)));
-        article.setType(cursor.getString(cursor.getColumnIndex(ARTICLE_TYPE)));
-        article.setAbstractDesc(cursor.getString(cursor.getColumnIndex(ARTICLE_ABSTRACT)));
+        article.setArticleType(cursor.getString(cursor.getColumnIndex(ARTICLE_TYPE)));
+        article.setTeaser(cursor.getString(cursor.getColumnIndex(ARTICLE_TEASER)));
 
         article.setThumbnail(cursor.getString(cursor.getColumnIndex(ARTICLE_THUMBNAIL)));
         article.setOriginalDimensions(cursor.getString(cursor.getColumnIndex(ARTICLE_ORIGINAL_DIMENSIONS)));

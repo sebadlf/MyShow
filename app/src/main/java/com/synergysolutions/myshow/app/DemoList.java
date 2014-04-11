@@ -10,6 +10,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.synergysolutions.myshow.app.Entity.Article;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class DemoList extends ActionBarActivity implements AdapterView.OnItemClickListener, IDownloadResultProcessor, IArticlesJsonResultProcessor, IArticlesLoadedResultProcessor, IArticlesDetailsLoadedResultProcessor {
+public class DemoList extends ActionBarActivity implements AdapterView.OnItemClickListener, IDownloadResultProcessor, IArticlesJsonResultProcessor, IArticlesLoadedResultProcessor {
 
     int REQUEST_CODE_ARTICLES = 1;
 
@@ -87,39 +89,6 @@ public class DemoList extends ActionBarActivity implements AdapterView.OnItemCli
             Toast.makeText(this, "Parsing Data", Toast.LENGTH_LONG).show();
 
             new ArticlesJsonAsyncTaskAsyncTask(this).execute(downloadResult.getResultBody());
-
-        } else if (downloadResult.getRequestCode() == REQUEST_CODE_ARTICLE_DETAILS) {
-
-            try {
-                JSONObject responseObject = (JSONObject) new JSONTokener(downloadResult.getResultBody()).nextValue();
-
-                JSONObject items = responseObject.getJSONObject("items");
-
-                Article article = this.articlesWithoutDetails.get(0);
-
-                JSONObject item = (JSONObject) items.getJSONObject(String.valueOf(article.getWikiaId()));
-
-                article.setAbstractDesc(item.getString("abstract"));
-                article.setDetailsDownloaded(true);
-
-                new DatabaseHandler(this).saveArticle(article);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            this.articlesWithoutDetails.remove(0);
-
-            if (this.articlesWithoutDetails.size() > 0) {
-
-                Article article = this.articlesWithoutDetails.get(0);
-
-                String url = String.format(URL_DETAILS, article.getWikiaId());
-
-                new DownloaderAsyncTask(REQUEST_CODE_ARTICLE_DETAILS, this).execute(url);
-
-            }
-
         }
 
         return null;
@@ -147,25 +116,6 @@ public class DemoList extends ActionBarActivity implements AdapterView.OnItemCli
     public void OnArticlesLoadedResultFinish(List<Article> result) {
 
         articlesAdapter.updateList(result);
-
-        new ArticlesDetailsUpdaterAsyncTask(this).execute();
-
-    }
-
-    @Override
-    public void OnArticlesDetailsLoadedResultFinish(List<Article> result) {
-
-        if (result.size() > 0) {
-
-            this.articlesWithoutDetails = result;
-
-            Article article = this.articlesWithoutDetails.get(0);
-
-            String url = String.format(URL_DETAILS, article.getWikiaId());
-
-            new DownloaderAsyncTask(REQUEST_CODE_ARTICLE_DETAILS, this).execute(url);
-
-        }
 
     }
 
