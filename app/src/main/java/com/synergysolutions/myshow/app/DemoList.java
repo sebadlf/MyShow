@@ -1,9 +1,13 @@
 package com.synergysolutions.myshow.app;
 
+import android.content.Intent;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -16,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class DemoList extends ActionBarActivity implements IDownloadResultProcessor, IArticlesJsonResultProcessor, IArticlesLoadedResultProcessor, IArticlesDetailsLoadedResultProcessor {
+public class DemoList extends ActionBarActivity implements AdapterView.OnItemClickListener, IDownloadResultProcessor, IArticlesJsonResultProcessor, IArticlesLoadedResultProcessor, IArticlesDetailsLoadedResultProcessor {
 
     int REQUEST_CODE_ARTICLES = 1;
 
@@ -42,6 +46,8 @@ public class DemoList extends ActionBarActivity implements IDownloadResultProces
 
         articlesAdapter = new ArticlesAdapter(this);
         listView.setAdapter(articlesAdapter);
+
+        listView.setOnItemClickListener(this);
 
         if (new DatabaseHandler(this).getArticlesCount() > 0) {
 
@@ -163,7 +169,14 @@ public class DemoList extends ActionBarActivity implements IDownloadResultProces
             new DownloaderAsyncTask(REQUEST_CODE_ARTICLE_DETAILS, this).execute(url);
 
         }
-
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(this, ArticleView.class);
+
+        intent.putExtra("wikiaId", id);
+
+        startActivity(intent);
+    }
 }

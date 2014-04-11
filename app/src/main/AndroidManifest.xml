@@ -20,7 +20,21 @@
             android:name="com.synergysolutions.myshow.app.DemoList"
             android:label="@string/title_activity_demo_list" >
         </activity>
+        <activity
+            android:name="com.synergysolutions.myshow.app.ArticleView"
+            android:label="@string/title_activity_article_view" >
 
+            <intent-filter>
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <data android:scheme="com.synergysolutions.myshow.article" />
+
+            </intent-filter>
+
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

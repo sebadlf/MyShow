@@ -203,6 +203,76 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return count;
     }
 
+    Article getArticle(long id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_ARTICLE, new String[] {
+                        ARTICLE_ID,
+                        ARTICLE_WIKIA_ID,
+                        ARTICLE_TITLE,
+                        ARTICLE_URL,
+                        ARTICLE_TYPE,
+                        ARTICLE_ABSTRACT,
+                        ARTICLE_THUMBNAIL,
+                        ARTICLE_ORIGINAL_DIMENSIONS,
+                }, ARTICLE_ID + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        Article article = new Article();
+
+        article.setId(cursor.getInt(cursor.getColumnIndex(ARTICLE_ID)));
+        article.setWikiaId(cursor.getInt(cursor.getColumnIndex(ARTICLE_WIKIA_ID)));
+
+        article.setTitle(cursor.getString(cursor.getColumnIndex(ARTICLE_TITLE)));
+        article.setUrl(cursor.getString(cursor.getColumnIndex(ARTICLE_URL)));
+        article.setType(cursor.getString(cursor.getColumnIndex(ARTICLE_TYPE)));
+        article.setAbstractDesc(cursor.getString(cursor.getColumnIndex(ARTICLE_ABSTRACT)));
+
+        article.setThumbnail(cursor.getString(cursor.getColumnIndex(ARTICLE_THUMBNAIL)));
+        article.setOriginalDimensions(cursor.getString(cursor.getColumnIndex(ARTICLE_ORIGINAL_DIMENSIONS)));
+
+        // return character
+        return article;
+    }
+
+    Article getArticle(String title) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_ARTICLE, new String[] {
+                        ARTICLE_ID,
+                        ARTICLE_WIKIA_ID,
+                        ARTICLE_TITLE,
+                        ARTICLE_URL,
+                        ARTICLE_TYPE,
+                        ARTICLE_ABSTRACT,
+                        ARTICLE_THUMBNAIL,
+                        ARTICLE_ORIGINAL_DIMENSIONS,
+                }, ARTICLE_TITLE + "=?",
+                new String[] { title }, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        Article article = new Article();
+
+        article.setId(cursor.getInt(cursor.getColumnIndex(ARTICLE_ID)));
+        article.setWikiaId(cursor.getInt(cursor.getColumnIndex(ARTICLE_WIKIA_ID)));
+
+        article.setTitle(cursor.getString(cursor.getColumnIndex(ARTICLE_TITLE)));
+        article.setUrl(cursor.getString(cursor.getColumnIndex(ARTICLE_URL)));
+        article.setType(cursor.getString(cursor.getColumnIndex(ARTICLE_TYPE)));
+        article.setAbstractDesc(cursor.getString(cursor.getColumnIndex(ARTICLE_ABSTRACT)));
+
+        article.setThumbnail(cursor.getString(cursor.getColumnIndex(ARTICLE_THUMBNAIL)));
+        article.setOriginalDimensions(cursor.getString(cursor.getColumnIndex(ARTICLE_ORIGINAL_DIMENSIONS)));
+
+        // return character
+        return article;
+    }
+
     /*
     // Adding new character
     void addCharacter(Character character) {
