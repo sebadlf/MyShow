@@ -2,6 +2,9 @@ package com.synergysolutions.myshow.app;
 
 import android.os.AsyncTask;
 
+import com.synergysolutions.myshow.app.Entity.Article;
+import com.synergysolutions.myshow.app.Entity.Section;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,18 +31,32 @@ public class ArticlesJsonAsyncTaskAsyncTask extends AsyncTask<String, Integer, L
         List<Article> result = new ArrayList<Article>();
 
         try {
-            JSONObject responseObject = (JSONObject) new JSONTokener(jsonString[0]).nextValue();
+            JSONArray articlesJson = (JSONArray) new JSONTokener(jsonString[0]).nextValue();
 
-            JSONArray items = responseObject.getJSONArray("items");
+            for (int articleId = 0; articleId < articlesJson.length(); articleId++) {
 
-            for (int idx = 0; idx < items.length(); idx++) {
-
-                JSONObject item = (JSONObject) items.get(idx);
+                JSONObject articleJson = (JSONObject) articlesJson.get(articleId);
 
                 Article article = new Article();
-                article.setWikiaId(item.getInt("id"));
-                article.setTitle(item.getString("title"));
-                article.setUrl(item.getString("url"));
+                article.setWikiaId(articleJson.getInt("wikiaId"));
+                article.setTitle(articleJson.getString("title"));
+                article.setUrl(articleJson.getString("url"));
+                article.setTeaser(articleJson.getString("teaser"));
+
+                JSONArray sectionsJson = articleJson.getJSONArray("sections");
+
+                for (int sectionId = 0; sectionId < sectionsJson.length(); sectionId++) {
+
+                    JSONObject sectionJson = (JSONObject) sectionsJson.get(sectionId);
+
+                    Section section = new Section();
+                    section.setArticle(article);
+                    section.setLevel(sectionJson.getInt("level"));
+                    section.setTitle(sectionJson.getString("title"));
+
+                    article.getSections().add(section);
+                }
+
                 result.add(article);
             }
 

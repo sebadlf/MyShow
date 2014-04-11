@@ -1,5 +1,7 @@
 package com.synergysolutions.myshow.app;
 
+import com.synergysolutions.myshow.app.Entity.Article;
+
 import java.util.List;
 
 /**

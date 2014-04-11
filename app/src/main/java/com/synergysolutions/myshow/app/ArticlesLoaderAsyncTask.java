@@ -2,7 +2,8 @@ package com.synergysolutions.myshow.app;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
+
+import com.synergysolutions.myshow.app.Entity.Article;
 
 import java.util.List;
 

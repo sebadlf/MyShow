@@ -5,8 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+
+import com.synergysolutions.myshow.app.Entity.Article;
 
 import java.util.Collections;
 import java.util.List;
@@ -60,7 +61,7 @@ public class ArticlesAdapter extends BaseAdapter {
         txtNombre.setText(article.getTitle());
 
         TextView txtAlias = (TextView) convertView.findViewById(R.id.alias);
-        txtAlias.setText(article.getAbstractDesc());
+        txtAlias.setText(article.getTeaser());
 
         return convertView;
 

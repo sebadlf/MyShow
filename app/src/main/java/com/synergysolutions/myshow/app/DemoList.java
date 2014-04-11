@@ -1,7 +1,6 @@
 package com.synergysolutions.myshow.app;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -46,8 +45,6 @@ public class DemoList extends ActionBarActivity implements AdapterView.OnItemCli
 
         articlesAdapter = new ArticlesAdapter(this);
         listView.setAdapter(articlesAdapter);
-
-        listView.setOnItemClickListener(this);
 
         if (new DatabaseHandler(this).getArticlesCount() > 0) {
 
@@ -169,6 +166,7 @@ public class DemoList extends ActionBarActivity implements AdapterView.OnItemCli
             new DownloaderAsyncTask(REQUEST_CODE_ARTICLE_DETAILS, this).execute(url);
 
         }
+
     }
 
     @Override
@@ -179,4 +177,5 @@ public class DemoList extends ActionBarActivity implements AdapterView.OnItemCli
 
         startActivity(intent);
     }
+
 }
