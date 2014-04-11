@@ -7,20 +7,18 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
+import com.synergysolutions.myshow.app.Entity.Article;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
-public class DemoList extends ActionBarActivity implements IDownloadResultProcessor, IArticlesJsonResultProcessor, IArticlesLoadedResultProcessor, IArticlesDetailsLoadedResultProcessor {
+public class DemoList extends ActionBarActivity implements IDownloadResultProcessor, IArticlesJsonResultProcessor, IArticlesLoadedResultProcessor {
 
     int REQUEST_CODE_ARTICLES = 1;
-
-    int REQUEST_CODE_ARTICLE_DETAILS = 2;
 
     ListView listView;
 
@@ -30,8 +28,8 @@ public class DemoList extends ActionBarActivity implements IDownloadResultProces
 
     ArticlesAdapter articlesAdapter;
 
-    private static final String URL = "http://agentsofshield.wikia.com/api/v1/Articles/List?limit=1000000";
-    private static final String URL_DETAILS = "http://agentsofshield.wikia.com/api/v1/Articles/Details?ids=%s&abstract=500&width=200&height=200";
+    private static final String URL = "http://myshow/app.php/articles";
+    //private static final String URL_DETAILS = "http://agentsofshield.wikia.com/api/v1/Articles/Details?ids=%s&abstract=500&width=200&height=200";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,38 +83,6 @@ public class DemoList extends ActionBarActivity implements IDownloadResultProces
 
             new ArticlesJsonAsyncTaskAsyncTask(this).execute(downloadResult.getResultBody());
 
-        } else if (downloadResult.getRequestCode() == REQUEST_CODE_ARTICLE_DETAILS) {
-
-            try {
-                JSONObject responseObject = (JSONObject) new JSONTokener(downloadResult.getResultBody()).nextValue();
-
-                JSONObject items = responseObject.getJSONObject("items");
-
-                Article article = this.articlesWithoutDetails.get(0);
-
-                JSONObject item = (JSONObject) items.getJSONObject(String.valueOf(article.getWikiaId()));
-
-                article.setAbstractDesc(item.getString("abstract"));
-                article.setDetailsDownloaded(true);
-
-                new DatabaseHandler(this).saveArticle(article);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            this.articlesWithoutDetails.remove(0);
-
-            if (this.articlesWithoutDetails.size() > 0) {
-
-                Article article = this.articlesWithoutDetails.get(0);
-
-                String url = String.format(URL_DETAILS, article.getWikiaId());
-
-                new DownloaderAsyncTask(REQUEST_CODE_ARTICLE_DETAILS, this).execute(url);
-
-            }
-
         }
 
         return null;
@@ -145,25 +111,6 @@ public class DemoList extends ActionBarActivity implements IDownloadResultProces
 
         articlesAdapter.updateList(result);
 
-        new ArticlesDetailsUpdaterAsyncTask(this).execute();
-
+        //new ArticlesDetailsUpdaterAsyncTask(this).execute();
     }
-
-    @Override
-    public void OnArticlesDetailsLoadedResultFinish(List<Article> result) {
-
-        if (result.size() > 0) {
-
-            this.articlesWithoutDetails = result;
-
-            Article article = this.articlesWithoutDetails.get(0);
-
-            String url = String.format(URL_DETAILS, article.getWikiaId());
-
-            new DownloaderAsyncTask(REQUEST_CODE_ARTICLE_DETAILS, this).execute(url);
-
-        }
-
-    }
-
 }

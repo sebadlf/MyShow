@@ -1,4 +1,4 @@
-package com.synergysolutions.myshow.app;
+package com.synergysolutions.myshow.app.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,14 +12,11 @@ public class Article {
     private int wikiaId;
     private String title;
     private String url;
-    private String type;
-    private String abstractDesc;
+    private String articleType;
+    private String teaser;
     private String thumbnail;
     private String originalDimensions;
     private List<Section> sections;
-
-    private boolean detailsDownloaded;
-    private boolean sectionsDownloaded;
 
     public Article(){
         this.sections = new ArrayList<Section>();
@@ -57,20 +54,20 @@ public class Article {
         this.url = url;
     }
 
-    public String getType() {
-        return type;
+    public String getArticleType() {
+        return articleType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setArticleType(String articleType) {
+        this.articleType = articleType;
     }
 
-    public String getAbstractDesc() {
-        return abstractDesc;
+    public String getTeaser() {
+        return teaser;
     }
 
-    public void setAbstractDesc(String abstractDesc) {
-        this.abstractDesc = abstractDesc;
+    public void setTeaser(String teaser) {
+        this.teaser = teaser;
     }
 
     public String getThumbnail() {
@@ -87,22 +84,6 @@ public class Article {
 
     public void setOriginalDimensions(String originalDimensions) {
         this.originalDimensions = originalDimensions;
-    }
-
-    public boolean isDetailsDownloaded() {
-        return detailsDownloaded;
-    }
-
-    public void setDetailsDownloaded(boolean detailsDownloaded) {
-        this.detailsDownloaded = detailsDownloaded;
-    }
-
-    public boolean isSectionsDownloaded() {
-        return sectionsDownloaded;
-    }
-
-    public void setSectionsDownloaded(boolean sectionsDownloaded) {
-        this.sectionsDownloaded = sectionsDownloaded;
     }
 
     public List<Section> getSections() {
