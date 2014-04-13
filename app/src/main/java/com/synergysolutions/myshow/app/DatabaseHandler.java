@@ -9,7 +9,10 @@ import android.database.sqlite.SQLiteStatement;
 import android.text.TextUtils;
 
 import com.synergysolutions.myshow.app.Entity.Article;
+import com.synergysolutions.myshow.app.Entity.ListElement;
 import com.synergysolutions.myshow.app.Entity.Section;
+import com.synergysolutions.myshow.app.Entity.SectionContent;
+import com.synergysolutions.myshow.app.Entity.SectionImage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,9 +60,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String SECTION_CONTENT_TEXT = "text";
 
     // ElementList Table Columns names
-    private static final String ELEMENT_LIST_ID = "_id";
-    private static final String ELEMENT_LIST_SECTION_CONTENT_ID = "sectionContentId";
-    private static final String ELEMENT_LIST_CONTENT_TEXT = "text";
+    private static final String LIST_ELEMENT_ID = "_id";
+    private static final String LIST_ELEMENT_SECTION_CONTENT_ID = "sectionContentId";
+    private static final String LIST_ELEMENT_TEXT = "text";
 
     // SectionContent Table Columns names
     private static final String SECTION_IMAGE_ID = "_id";
@@ -93,7 +96,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + SECTION_ID + " INTEGER PRIMARY KEY,"
                 + SECTION_ARTICLE_ID + " INTEGER REFERENCES " + TABLE_ARTICLE + "(" + ARTICLE_ID + "),"
                 + SECTION_TITLE + " TEXT,"
-                + SECTION_LEVEL + " TEXT"
+                + SECTION_LEVEL + " INTEGER"
                 + ")";
 
         String CREATE_SECTION_CONTENT_TABLE = "CREATE TABLE " + TABLE_SECTION_CONTENT
@@ -106,9 +109,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String CREATE_LIST_ELEMENT_TABLE = "CREATE TABLE " + TABLE_LIST_ELEMENT
                 + "("
-                + ELEMENT_LIST_ID + " INTEGER PRIMARY KEY,"
-                + ELEMENT_LIST_SECTION_CONTENT_ID + " INTEGER REFERENCES " + TABLE_SECTION_CONTENT + "(" + SECTION_CONTENT_ID + "),"
-                + ELEMENT_LIST_CONTENT_TEXT + " TEXT"
+                + LIST_ELEMENT_ID + " INTEGER PRIMARY KEY,"
+                + LIST_ELEMENT_SECTION_CONTENT_ID + " INTEGER REFERENCES " + TABLE_SECTION_CONTENT + "(" + SECTION_CONTENT_ID + "),"
+                + LIST_ELEMENT_TEXT + " TEXT"
                 + ")";
 
         String CREATE_SECTION_IMAGE_TABLE = "CREATE TABLE " + TABLE_SECTION_IMAGE
@@ -153,7 +156,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(ARTICLE_WIKIA_ID, article.getWikiaId());
         values.put(ARTICLE_TITLE, article.getTitle());
         values.put(ARTICLE_URL, article.getUrl());
-        values.put(ARTICLE_TYPE, article.getTitle());
+        values.put(ARTICLE_TYPE, article.getArticleType());
         values.put(ARTICLE_TEASER, article.getTeaser());
         values.put(ARTICLE_THUMBNAIL, article.getThumbnail());
         values.put(ARTICLE_ORIGINAL_DIMENSIONS, article.getOriginalDimensions());
@@ -169,15 +172,64 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
             values = new ContentValues();
 
-            values.put(SECTION_ARTICLE_ID, article.getWikiaId());
-            values.put(SECTION_TITLE, article.getTitle());
-            values.put(SECTION_LEVEL, article.getUrl());
+            values.put(SECTION_ARTICLE_ID, article.getId());
+            values.put(SECTION_TITLE, section.getTitle());
+            values.put(SECTION_LEVEL, section.getLevel());
 
             if (section.getId() == 0){
                 db.insert(TABLE_SECTION, null, values);
                 section.setId(this.getLastInsertedId(db, TABLE_SECTION));
             } else {
                 db.update(TABLE_SECTION, values, SECTION_ID + "= ?",  new String[] { String.valueOf(section.getId()) });
+            }
+
+
+            for (SectionContent sectionContent : section.getSectionContents()){
+
+                values = new ContentValues();
+
+                values.put(SECTION_CONTENT_SECTION_ID, section.getId());
+                values.put(SECTION_CONTENT_TYPE, sectionContent.getType());
+                values.put(SECTION_CONTENT_TEXT, sectionContent.getText());
+
+                if (sectionContent.getId() == 0){
+                    db.insert(TABLE_SECTION_CONTENT, null, values);
+                    sectionContent.setId(this.getLastInsertedId(db, TABLE_SECTION_CONTENT));
+                } else {
+                    db.update(TABLE_SECTION_CONTENT, values, SECTION_CONTENT_ID + "= ?",  new String[] { String.valueOf(sectionContent.getId()) });
+                }
+
+                for (ListElement listElement : sectionContent.getListElements()){
+
+                    values = new ContentValues();
+
+                    values.put(LIST_ELEMENT_SECTION_CONTENT_ID, sectionContent.getId());
+                    values.put(LIST_ELEMENT_TEXT, listElement.getText());
+
+                    if (listElement.getId() == 0){
+                        db.insert(TABLE_LIST_ELEMENT, null, values);
+                        listElement.setId(this.getLastInsertedId(db, TABLE_LIST_ELEMENT));
+                    } else {
+                        db.update(TABLE_LIST_ELEMENT, values, LIST_ELEMENT_ID + "= ?",  new String[] { String.valueOf(listElement.getId()) });
+                    }
+                }
+            }
+
+            for (SectionImage sectionImage : section.getSectionImages()){
+
+                values = new ContentValues();
+
+                values.put(SECTION_IMAGE_SECTION_ID, section.getId());
+                values.put(SECTION_IMAGE_SRC, sectionImage.getSrc());
+                values.put(SECTION_IMAGE_CAPTION, sectionImage.getCaption());
+
+                if (sectionImage.getId() == 0){
+                    db.insert(TABLE_SECTION_IMAGE, null, values);
+                    sectionImage.setId(this.getLastInsertedId(db, TABLE_SECTION_IMAGE));
+                } else {
+                    db.update(TABLE_SECTION_IMAGE, values, SECTION_IMAGE_ID + "= ?",  new String[] { String.valueOf(sectionImage.getId()) });
+                }
+
             }
 
         }
@@ -231,37 +283,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
-        //Sections
-
-        String filter = TextUtils.join(",", articlesCache.keySet());
-
-        selectQuery = "SELECT  * FROM " + TABLE_SECTION + " WHERE " + SECTION_ARTICLE_ID + " IN (" + filter + ")";
-        cursor = db.rawQuery(selectQuery, null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                Section section = new Section();
-
-                Article article = articlesCache.get(cursor.getInt(cursor.getColumnIndex(SECTION_ARTICLE_ID)));
-
-                article.setId(cursor.getInt(cursor.getColumnIndex(ARTICLE_ID)));
-                article.setWikiaId(cursor.getInt(cursor.getColumnIndex(ARTICLE_WIKIA_ID)));
-
-                article.setTitle(cursor.getString(cursor.getColumnIndex(ARTICLE_TITLE)));
-                article.setUrl(cursor.getString(cursor.getColumnIndex(ARTICLE_URL)));
-                article.setArticleType(cursor.getString(cursor.getColumnIndex(ARTICLE_TYPE)));
-                article.setTeaser(cursor.getString(cursor.getColumnIndex(ARTICLE_TEASER)));
-
-                article.setThumbnail(cursor.getString(cursor.getColumnIndex(ARTICLE_THUMBNAIL)));
-                article.setOriginalDimensions(cursor.getString(cursor.getColumnIndex(ARTICLE_ORIGINAL_DIMENSIONS)));
-
-                articlesCache.put(article.getId(), article);
-
-                articleList.add(article);
-            } while (cursor.moveToNext());
-        }
-
-
         // return character list
         return articleList;
     }
@@ -312,42 +333,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return count;
     }
 
-    Article getArticle(long id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.query(TABLE_ARTICLE, new String[] {
-                        ARTICLE_ID,
-                        ARTICLE_WIKIA_ID,
-                        ARTICLE_TITLE,
-                        ARTICLE_URL,
-                        ARTICLE_TYPE,
-                        ARTICLE_TEASER,
-                        ARTICLE_THUMBNAIL,
-                        ARTICLE_ORIGINAL_DIMENSIONS,
-                }, ARTICLE_ID + "=?",
-                new String[] { String.valueOf(id) }, null, null, null, null);
-
-        if (cursor != null)
-            cursor.moveToFirst();
-
-        Article article = new Article();
-
-        article.setId(cursor.getInt(cursor.getColumnIndex(ARTICLE_ID)));
-        article.setWikiaId(cursor.getInt(cursor.getColumnIndex(ARTICLE_WIKIA_ID)));
-
-        article.setTitle(cursor.getString(cursor.getColumnIndex(ARTICLE_TITLE)));
-        article.setUrl(cursor.getString(cursor.getColumnIndex(ARTICLE_URL)));
-        article.setArticleType(cursor.getString(cursor.getColumnIndex(ARTICLE_TYPE)));
-        article.setTeaser(cursor.getString(cursor.getColumnIndex(ARTICLE_TEASER)));
-
-        article.setThumbnail(cursor.getString(cursor.getColumnIndex(ARTICLE_THUMBNAIL)));
-        article.setOriginalDimensions(cursor.getString(cursor.getColumnIndex(ARTICLE_ORIGINAL_DIMENSIONS)));
-
-        // return character
-        return article;
+    Article getArticle(int id) {
+        return this.getArticle(ARTICLE_ID, id);
     }
 
     Article getArticle(String title) {
+        return this.getArticle(ARTICLE_TITLE, title);
+    }
+
+    private Article getArticle(String field, Object value) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_ARTICLE, new String[] {
@@ -359,8 +353,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         ARTICLE_TEASER,
                         ARTICLE_THUMBNAIL,
                         ARTICLE_ORIGINAL_DIMENSIONS,
-                }, ARTICLE_TITLE + "=?",
-                new String[] { title }, null, null, null, null);
+                }, field + "=?",
+                new String[] { String.valueOf(value) }, null, null, null, null);
 
         if (cursor != null)
             cursor.moveToFirst();
@@ -377,6 +371,107 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         article.setThumbnail(cursor.getString(cursor.getColumnIndex(ARTICLE_THUMBNAIL)));
         article.setOriginalDimensions(cursor.getString(cursor.getColumnIndex(ARTICLE_ORIGINAL_DIMENSIONS)));
+
+        //Sections
+        String selectQuery = "SELECT  * FROM " + TABLE_SECTION + " WHERE " + SECTION_ARTICLE_ID + " = " + article.getId();
+        cursor = db.rawQuery(selectQuery, null);
+
+        HashMap<Integer, Section> sectionHashMap = new HashMap<Integer, Section>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                Section section = new Section();
+
+                article.getSections().add(section);
+                section.setArticle(article);
+
+                section.setId(cursor.getInt(cursor.getColumnIndex(SECTION_ID)));
+                section.setTitle(cursor.getString(cursor.getColumnIndex(SECTION_TITLE)));
+                section.setLevel(cursor.getInt(cursor.getColumnIndex(SECTION_LEVEL)));
+
+                sectionHashMap.put(section.getId(), section);
+
+            } while (cursor.moveToNext());
+        }
+
+        if (sectionHashMap.isEmpty() == false){
+
+            String ids = TextUtils.join(",", sectionHashMap.keySet());
+
+            //Section Images
+            selectQuery = "SELECT  * FROM " + TABLE_SECTION_IMAGE + " WHERE " + SECTION_IMAGE_SECTION_ID + " IN (" + ids + ")";
+            cursor = db.rawQuery(selectQuery, null);
+
+            if (cursor.moveToFirst()) {
+                do {
+                    SectionImage sectionImage = new SectionImage();
+
+                    int sectionId = cursor.getInt(cursor.getColumnIndex(SECTION_IMAGE_SECTION_ID));
+                    Section section = sectionHashMap.get(sectionId);
+
+                    section.getSectionImages().add(sectionImage);
+                    sectionImage.setSection(section);
+
+                    sectionImage.setId(cursor.getInt(cursor.getColumnIndex(SECTION_IMAGE_ID)));
+                    sectionImage.setSrc(cursor.getString(cursor.getColumnIndex(SECTION_IMAGE_SRC)));
+                    sectionImage.setCaption(cursor.getString(cursor.getColumnIndex(SECTION_IMAGE_CAPTION)));
+
+                } while (cursor.moveToNext());
+            }
+
+            //Section Content
+
+            selectQuery = "SELECT  * FROM " + TABLE_SECTION_CONTENT + " WHERE " + SECTION_CONTENT_SECTION_ID + " IN (" + ids + ")";
+            cursor = db.rawQuery(selectQuery, null);
+
+            HashMap<Integer, SectionContent> sectionContentHashMap = new HashMap<Integer, SectionContent>();
+
+            if (cursor.moveToFirst()) {
+                do {
+                    SectionContent sectionContent = new SectionContent();
+
+                    int sectionId = cursor.getInt(cursor.getColumnIndex(SECTION_CONTENT_SECTION_ID));
+                    Section section = sectionHashMap.get(sectionId);
+
+                    section.getSectionContents().add(sectionContent);
+                    sectionContent.setSection(section);
+
+                    sectionContent.setId(cursor.getInt(cursor.getColumnIndex(SECTION_CONTENT_ID)));
+                    sectionContent.setType(cursor.getString(cursor.getColumnIndex(SECTION_CONTENT_TYPE)));
+                    sectionContent.setText(cursor.getString(cursor.getColumnIndex(SECTION_CONTENT_TEXT)));
+
+                    sectionContentHashMap.put(sectionContent.getId(), sectionContent);
+
+                } while (cursor.moveToNext());
+            }
+
+            if (sectionContentHashMap.isEmpty() == false){
+
+                ids = TextUtils.join(",", sectionContentHashMap.keySet());
+
+                //SectionContents
+                selectQuery = "SELECT  * FROM " + TABLE_LIST_ELEMENT + " WHERE " + LIST_ELEMENT_SECTION_CONTENT_ID + " IN (" + ids + ")";
+                cursor = db.rawQuery(selectQuery, null);
+
+                if (cursor.moveToFirst()) {
+                    do {
+                        ListElement listElement = new ListElement();
+
+                        int sectionContentId = cursor.getInt(cursor.getColumnIndex(LIST_ELEMENT_SECTION_CONTENT_ID));
+                        SectionContent sectionContent = sectionContentHashMap.get(sectionContentId);
+
+                        sectionContent.getListElements().add(listElement);
+                        listElement.setSectionContent(sectionContent);
+
+                        listElement.setId(cursor.getInt(cursor.getColumnIndex(LIST_ELEMENT_ID)));
+                        listElement.setText(cursor.getString(cursor.getColumnIndex(LIST_ELEMENT_TEXT)));
+
+                    } while (cursor.moveToNext());
+                }
+
+            }
+
+        }
 
         // return character
         return article;

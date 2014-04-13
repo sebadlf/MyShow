@@ -21,8 +21,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.synergysolutions.myshow.app.Entity.Article;
+import com.synergysolutions.myshow.app.Entity.ListElement;
+import com.synergysolutions.myshow.app.Entity.Section;
+import com.synergysolutions.myshow.app.Entity.SectionContent;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -33,6 +37,10 @@ public class ArticleView extends ActionBarActivity {
 
     TextView descriptionTextView;
 
+    DatabaseHandler db;
+
+    Article article;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,11 +48,11 @@ public class ArticleView extends ActionBarActivity {
 
         Bundle extras = this.getIntent().getExtras();
 
-        long id = extras.getLong("wikiaId");
+        int id = extras.getInt("wikiaId");
 
-        DatabaseHandler db = new DatabaseHandler(this);
+        db = new DatabaseHandler(this);
 
-        Article article = null;
+        article = null;
 
         if (id != 0) {
             article = db.getArticle(id);
@@ -55,9 +63,9 @@ public class ArticleView extends ActionBarActivity {
 
                 String url = data.toString();
 
-                url = url.replace("com.synergysolutions.myshow.article://", "");
+                String title = url.replace("com.synergysolutions.myshow.article://", "");
 
-                article = db.getArticle(url);
+                article = db.getArticle(title);
             }
         }
 
@@ -75,29 +83,113 @@ public class ArticleView extends ActionBarActivity {
 
         myLayout.addView(descriptionTextView);
 
-        ImageView imageView = new ImageView(this);
+        if (article.getThumbnail() != null){
+            ImageView imageView = new ImageView(this);
 
-        String url = "http://img4.wikia.nocookie.net/__cb20130517163516/agentsofshield/images/1/11/SKYESeason1.jpg";
+            String url = article.getThumbnail();
 
-        myLayout.addView(imageView);
+            myLayout.addView(imageView);
 
-        new DownloadImageTask(imageView).execute(url);
+            new DownloadImageTask(imageView).execute(url);
+
+        }
 
         //////
+        for(Section section : article.getSections()){
+            this.drawSection(myLayout, section);
+        }
 
-        //Pattern userMatcher = Pattern.compile("\\B@[^:\\s]+");
+        this.linkifyTextView(descriptionTextView);
+
+    }
+
+    private void drawSection(LinearLayout myLayout, Section section) {
+
+        TextView textView = new TextView(this);
+
+        textView.setText(section.getTitle());
+
+        myLayout.addView(textView);
+
+        this.linkifyTextView(textView);
+
+        for (SectionContent sectionContent : section.getSectionContents()){
+
+            this.drawSectionContent(myLayout, sectionContent);
+
+        }
+    }
+
+    private void drawSectionContent(LinearLayout myLayout, SectionContent sectionContent) {
+
+        if (sectionContent.getType().equals("paragraph")){
+            this.drawSectionContentParagraph(myLayout, sectionContent);
+        } else if (sectionContent.getType().equals("gallery")){
+            this.drawSectionContentGallery(myLayout, sectionContent);
+        } else if (sectionContent.getType().equals("list")){
+            this.drawSectionContentList(myLayout, sectionContent);
+        } else {
+            Toast.makeText(this, "Invalid Section Content Type " + sectionContent.getType() ,Toast.LENGTH_LONG);
+        }
+
+
+    }
+
+    private void drawSectionContentList(LinearLayout myLayout, SectionContent sectionContent) {
+
+        for (ListElement listElement : sectionContent.getListElements()){
+
+            TextView textView = new TextView(this);
+
+            textView.setText(listElement.getText());
+
+            myLayout.addView(textView);
+
+        }
+
+    }
+
+    private void drawSectionContentGallery(LinearLayout myLayout, SectionContent sectionContent) {
+
+        for (ListElement listElement : sectionContent.getListElements()){
+            ImageView imageView = new ImageView(this);
+
+            String url = listElement.getText();
+
+            myLayout.addView(imageView);
+
+            new DownloadImageTask(imageView).execute(url);
+        }
+
+    }
+
+    private void drawSectionContentParagraph(LinearLayout myLayout, SectionContent sectionContent) {
+        TextView textView = new TextView(this);
+
+        textView.setText(sectionContent.getText());
+
+        myLayout.addView(textView);
+
+        this.linkifyTextView(textView);
+    }
+
+    private void linkifyTextView(TextView textView){
 
         for(Article articleLink : db.getAllArticles()){
             if (article.getTitle().equals(articleLink.getTitle()) == false){
+
+                //Pattern userMatcher = Pattern.compile("\\B@[^:\\s]+");
                 Pattern userMatcher = Pattern.compile(articleLink.getTitle());
 
                 String userViewURL = "com.synergysolutions.myshow.article://";
 
-                Linkify.addLinks(descriptionTextView, userMatcher, userViewURL);
+                Linkify.addLinks(textView, userMatcher, userViewURL);
             }
         }
-
     }
+
+
+
 
 
     @Override

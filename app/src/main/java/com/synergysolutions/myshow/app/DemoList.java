@@ -25,18 +25,13 @@ public class DemoList extends ActionBarActivity implements AdapterView.OnItemCli
 
     int REQUEST_CODE_ARTICLES = 1;
 
-    int REQUEST_CODE_ARTICLE_DETAILS = 2;
-
     ListView listView;
-
-    List<Article> articlesWithoutDetails;
 
     DatabaseHandler databaseHandler;
 
     ArticlesAdapter articlesAdapter;
 
-    private static final String URL = "http://agentsofshield.wikia.com/api/v1/Articles/List?limit=1000000";
-    private static final String URL_DETAILS = "http://agentsofshield.wikia.com/api/v1/Articles/Details?ids=%s&abstract=500&width=200&height=200";
+    private static final String URL = "http://myshow/app.php/articles";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,15 +43,18 @@ public class DemoList extends ActionBarActivity implements AdapterView.OnItemCli
         articlesAdapter = new ArticlesAdapter(this);
         listView.setAdapter(articlesAdapter);
 
+        listView.setOnItemClickListener(this);
+
+        /*
         if (new DatabaseHandler(this).getArticlesCount() > 0) {
 
             new ArticlesLoaderAsyncTask(this).execute();
 
-        } else {
+        } else {*/
             Toast.makeText(this, "Download Data", Toast.LENGTH_LONG).show();
 
             new DownloaderAsyncTask(REQUEST_CODE_ARTICLES, this).execute(URL);
-        }
+        /*}*/
     }
 
     @Override
@@ -123,7 +121,7 @@ public class DemoList extends ActionBarActivity implements AdapterView.OnItemCli
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(this, ArticleView.class);
 
-        intent.putExtra("wikiaId", id);
+        intent.putExtra("wikiaId", (int)id);
 
         startActivity(intent);
     }
