@@ -45,16 +45,15 @@ public class DemoList extends ActionBarActivity implements AdapterView.OnItemCli
 
         listView.setOnItemClickListener(this);
 
-        /*
         if (new DatabaseHandler(this).getArticlesCount() > 0) {
 
             new ArticlesLoaderAsyncTask(this).execute();
 
-        } else {*/
+        } else {
             Toast.makeText(this, "Download Data", Toast.LENGTH_LONG).show();
 
             new DownloaderAsyncTask(REQUEST_CODE_ARTICLES, this).execute(URL);
-        /*}*/
+        }
     }
 
     @Override
