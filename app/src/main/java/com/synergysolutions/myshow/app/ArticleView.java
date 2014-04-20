@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -27,6 +28,7 @@ import com.synergysolutions.myshow.app.Entity.Article;
 import com.synergysolutions.myshow.app.Entity.ListElement;
 import com.synergysolutions.myshow.app.Entity.Section;
 import com.synergysolutions.myshow.app.Entity.SectionContent;
+import com.synergysolutions.myshow.app.Entity.SectionImage;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -69,11 +71,12 @@ public class ArticleView extends ActionBarActivity {
             }
         }
 
-        LinearLayout myLayout = (LinearLayout) findViewById(R.id.ArticleView);
+        TextView titleView = (TextView) findViewById(R.id.ArticleTitle);
+        titleView.setText(article.getTitle());
+
+        LinearLayout myLayout = (LinearLayout) findViewById(R.id.ArticleSections);
 
         TextView textView = new TextView(this);
-
-        textView.setText(article.getTitle());
 
         myLayout.addView(textView);
 
@@ -83,7 +86,7 @@ public class ArticleView extends ActionBarActivity {
 
         myLayout.addView(descriptionTextView);
 
-        if (article.getThumbnail() != null){
+        if ((article.getThumbnail() != null) && (article.getThumbnail().startsWith("http"))) {
             ImageView imageView = new ImageView(this);
 
             String url = article.getThumbnail();
@@ -107,7 +110,9 @@ public class ArticleView extends ActionBarActivity {
 
         TextView textView = new TextView(this);
 
-        textView.setText(section.getTitle());
+        textView.setText(section.getTitle() + " (" + section.getLevel() + ")");
+
+        textView.setTypeface(null, Typeface.BOLD);
 
         myLayout.addView(textView);
 
@@ -118,14 +123,16 @@ public class ArticleView extends ActionBarActivity {
             this.drawSectionContent(myLayout, sectionContent);
 
         }
+
+        for(SectionImage sectionImage : section.getSectionImages()){
+            this.drawSectionImage(myLayout, sectionImage);
+        }
     }
 
     private void drawSectionContent(LinearLayout myLayout, SectionContent sectionContent) {
 
         if (sectionContent.getType().equals("paragraph")){
             this.drawSectionContentParagraph(myLayout, sectionContent);
-        } else if (sectionContent.getType().equals("gallery")){
-            this.drawSectionContentGallery(myLayout, sectionContent);
         } else if (sectionContent.getType().equals("list")){
             this.drawSectionContentList(myLayout, sectionContent);
         } else {
@@ -149,17 +156,23 @@ public class ArticleView extends ActionBarActivity {
 
     }
 
-    private void drawSectionContentGallery(LinearLayout myLayout, SectionContent sectionContent) {
+    private void drawSectionImage(LinearLayout myLayout, SectionImage sectionImage) {
 
-        for (ListElement listElement : sectionContent.getListElements()){
             ImageView imageView = new ImageView(this);
 
-            String url = listElement.getText();
+            String url = sectionImage.getSrc();
 
             myLayout.addView(imageView);
 
             new DownloadImageTask(imageView).execute(url);
-        }
+
+            if ((sectionImage.getCaption() != null) && (sectionImage.getCaption().length() > 0)){
+                TextView textView = new TextView(this);
+
+                textView.setText(sectionImage.getCaption());
+
+                myLayout.addView(textView);
+            }
 
     }
 
@@ -187,9 +200,6 @@ public class ArticleView extends ActionBarActivity {
             }
         }
     }
-
-
-
 
 
     @Override
