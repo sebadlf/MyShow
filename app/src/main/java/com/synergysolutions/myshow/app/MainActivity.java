@@ -8,6 +8,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.startapp.android.publish.StartAppAd;
+import com.startapp.android.publish.banner.banner3d.Banner3D;
+
 
 public class MainActivity extends ActionBarActivity {
 
@@ -16,6 +19,9 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        StartAppAd.init(this, "104220702", "204133814");
+
         setContentView(R.layout.activity_main);
 
         viewCharactersList = (Button) findViewById(R.id.view_characters_list);

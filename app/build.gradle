@@ -2,9 +2,9 @@ apply plugin: 'android'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.2"
+    buildToolsVersion '19.0.2'
 
-    defaultConfig {
+    defaultConfig {c:\
         minSdkVersion 10
         targetSdkVersion 19
         versionCode 1
@@ -17,6 +17,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+
+    productFlavors {
+        production {
+            packageName "be.tamere.gradlebuildtypesexample"
+        }
+
+        staging {
+            packageName "be.tamere.gradlebuildtypesexample.staging"
+        }
+    }
 }
 
 dependencies {
@@ -24,4 +34,5 @@ dependencies {
     compile 'com.android.support:support-v4:19.0.1'
     compile 'com.android.support:appcompat-v7:19.0.1'
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile files('src/main/libs/StartAppInApp-2.3.1.jar')
 }
