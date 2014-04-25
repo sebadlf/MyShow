@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.synergysolutions.myshow.app.Entity.Article;
@@ -56,6 +57,14 @@ public class ArticlesAdapter extends BaseAdapter {
         }
 
         Article article = (Article)this.getItem(position);
+
+        ImageView imgThombnail = (ImageView) convertView.findViewById(R.id.thumbnail);
+
+        imgThombnail.setImageResource(R.drawable.logo);
+
+        if ((article.getThumbnail() != null) && (article.getThumbnail().startsWith("http"))){
+            new DownloadImageTask(imgThombnail).execute(article.getThumbnail());
+        }
 
         TextView txtNombre = (TextView) convertView.findViewById(R.id.nombre);
         txtNombre.setText(article.getTitle());

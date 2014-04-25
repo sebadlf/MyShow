@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.synergysolutions.myshow.app.Entity.Article;
+import com.synergysolutions.myshow.app.Entity.LinkedArticle;
 import com.synergysolutions.myshow.app.Entity.ListElement;
 import com.synergysolutions.myshow.app.Entity.Section;
 import com.synergysolutions.myshow.app.Entity.SectionContent;
@@ -32,6 +33,8 @@ import com.synergysolutions.myshow.app.Entity.SectionImage;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 
@@ -87,6 +90,7 @@ public class ArticleView extends ActionBarActivity {
         myLayout.addView(descriptionTextView);
 
         if ((article.getThumbnail() != null) && (article.getThumbnail().startsWith("http"))) {
+
             ImageView imageView = new ImageView(this);
 
             String url = article.getThumbnail();
@@ -102,7 +106,7 @@ public class ArticleView extends ActionBarActivity {
             this.drawSection(myLayout, section);
         }
 
-        this.linkifyTextView(descriptionTextView);
+        //this.linkifyTextView(descriptionTextView);
 
     }
 
@@ -116,7 +120,7 @@ public class ArticleView extends ActionBarActivity {
 
         myLayout.addView(textView);
 
-        this.linkifyTextView(textView);
+        //this.linkifyTextView(textView);
 
         for (SectionContent sectionContent : section.getSectionContents()){
 
@@ -152,6 +156,8 @@ public class ArticleView extends ActionBarActivity {
 
             myLayout.addView(textView);
 
+            this.linkifyTextView(textView, listElement.getLinkedArticles());
+
         }
 
     }
@@ -183,21 +189,18 @@ public class ArticleView extends ActionBarActivity {
 
         myLayout.addView(textView);
 
-        this.linkifyTextView(textView);
+        this.linkifyTextView(textView, sectionContent.getLinkedArticles());
     }
 
-    private void linkifyTextView(TextView textView){
+    private void linkifyTextView(TextView textView, List<LinkedArticle> linkedArticles){
 
-        for(Article articleLink : db.getAllArticles()){
-            if (article.getTitle().equals(articleLink.getTitle()) == false){
+        for(LinkedArticle linkedArticle : linkedArticles){
+            //Pattern userMatcher = Pattern.compile("\\B@[^:\\s]+");
+            Pattern userMatcher = Pattern.compile(linkedArticle.getAlias());
 
-                //Pattern userMatcher = Pattern.compile("\\B@[^:\\s]+");
-                Pattern userMatcher = Pattern.compile(articleLink.getTitle());
+            String userViewURL = "com.synergysolutions.myshow.article://";
 
-                String userViewURL = "com.synergysolutions.myshow.article://";
-
-                Linkify.addLinks(textView, userMatcher, userViewURL);
-            }
+            Linkify.addLinks(textView, userMatcher, userViewURL);
         }
     }
 
@@ -221,60 +224,4 @@ public class ArticleView extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-
-            bmImage.setImageBitmap(result);
-
-            bmImage.setBackgroundColor(Color.RED);
-
-            /*
-            int lines = (int)Math.round(bmImage.getDrawable().getIntrinsicHeight() / descriptionTextView.getLineHeight());
-
-            String text = descriptionTextView.getText().toString();
-
-            // Get the icon and its width
-            Drawable DICON = bmImage.getDrawable();
-            int leftMargin = DICON.getIntrinsicWidth() + 10 ;
-
-            //Set the icon in R.id.icon
-            //ImageView icon =(ImageView)findViewById(R.id.icon) ;
-            bmImage.setBackgroundDrawable (DICON) ;
-
-            SpannableString SS = new SpannableString (text);
-            //Expose the indent for the first three rows
-            SS.setSpan(new MyLeadingMarginSpan2(lines,leftMargin),0,SS.length(),0);
-
-            //TextView MessageView = ( TextView ) findViewById ( R.id.message_view) ;
-            //MessageView. setText ( SS ) ;
-
-            descriptionTextView.setText(SS);
-
-
-            RelativeLayout myLayout = (RelativeLayout) findViewById(R.id.ArticleView);
-            myLayout.invalidate();
-            */
-        }
-    }
-
 }

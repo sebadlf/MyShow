@@ -8,7 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.text.TextUtils;
 
+import com.synergysolutions.myshow.app.Entity.Alias;
 import com.synergysolutions.myshow.app.Entity.Article;
+import com.synergysolutions.myshow.app.Entity.LinkedArticle;
 import com.synergysolutions.myshow.app.Entity.ListElement;
 import com.synergysolutions.myshow.app.Entity.Section;
 import com.synergysolutions.myshow.app.Entity.SectionContent;
@@ -32,10 +34,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Characters table name
     private static final String TABLE_ARTICLE = "Article";
+    private static final String TABLE_ALIAS = "Alias";
     private static final String TABLE_SECTION = "Section";
     private static final String TABLE_SECTION_CONTENT = "SectionContent";
     private static final String TABLE_LIST_ELEMENT = "ListElement";
     private static final String TABLE_SECTION_IMAGE = "SectionImages";
+    private static final String TABLE_LINKED_ARTICLE = "LinkedArticle";
 
     // Article Table Columns names
     private static final String ARTICLE_ID = "_id";
@@ -70,6 +74,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String SECTION_IMAGE_SRC = "src";
     private static final String SECTION_IMAGE_CAPTION = "caption";
 
+    // LinkedArticle Table Columns names
+    private static final String LINKED_ARTICLE_ID = "_id";
+    private static final String LINKED_ARTICLE_SECTION_CONTENT_ID = "sectionContentId";
+    private static final String LINKED_ARTICLE_LIST_ELEMENT_ID = "listElementId";
+    private static final String LINKED_ARTICLE_ALIAS = "alias";
+
+    // LinkedArticle Table Columns names
+    private static final String ALIAS_ID = "_id";
+    private static final String ALIAS_ARTICLE_ID = "articleId";
+    private static final String ALIAS_TITLE = "title";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -89,6 +103,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + ARTICLE_TEASER + " TEXT,"
                 + ARTICLE_THUMBNAIL + " TEXT,"
                 + ARTICLE_ORIGINAL_DIMENSIONS + " TEXT"
+                + ")";
+
+        String CREATE_ALIAS_TABLE = "CREATE TABLE " + TABLE_ALIAS
+                + "("
+                + ALIAS_ID + " INTEGER PRIMARY KEY,"
+                + ALIAS_ARTICLE_ID + " INTEGER REFERENCES " + TABLE_ARTICLE + "(" + ARTICLE_ID + "),"
+                + ALIAS_TITLE + " TEXT"
                 + ")";
 
         String CREATE_SECTION_TABLE = "CREATE TABLE " + TABLE_SECTION
@@ -122,21 +143,33 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + SECTION_IMAGE_CAPTION + " TEXT"
                 + ")";
 
+        String CREATE_LINKED_ARTICLES_TABLE = "CREATE TABLE " + TABLE_LINKED_ARTICLE
+                + "("
+                + LINKED_ARTICLE_ID + " INTEGER PRIMARY KEY,"
+                + LINKED_ARTICLE_SECTION_CONTENT_ID + " INTEGER REFERENCES " + TABLE_SECTION_CONTENT + "(" + SECTION_CONTENT_ID + "),"
+                + LINKED_ARTICLE_LIST_ELEMENT_ID + " INTEGER REFERENCES " + TABLE_LIST_ELEMENT + "(" + LIST_ELEMENT_ID + "),"
+                + LINKED_ARTICLE_ALIAS + " TEXT"
+                + ")";
+
         db.execSQL(CREATE_ARTICLE_TABLE);
+        db.execSQL(CREATE_ALIAS_TABLE);
         db.execSQL(CREATE_SECTION_TABLE);
         db.execSQL(CREATE_SECTION_CONTENT_TABLE);
         db.execSQL(CREATE_LIST_ELEMENT_TABLE);
         db.execSQL(CREATE_SECTION_IMAGE_TABLE);
+        db.execSQL(CREATE_LINKED_ARTICLES_TABLE);
     }
 
     // Upgrading database
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_LINKED_ARTICLE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SECTION_IMAGE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LIST_ELEMENT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SECTION_CONTENT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SECTION);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ALIAS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ARTICLE);
 
         // Create tables again
@@ -168,6 +201,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.update(TABLE_ARTICLE, values, ARTICLE_ID + "= ?",  new String[] { String.valueOf(article.getId()) });
         }
 
+        for (Alias alias : article.getAliases()) {
+
+            values = new ContentValues();
+
+            values.put(ALIAS_ARTICLE_ID, article.getId());
+            values.put(ALIAS_TITLE, alias.getTitle());
+
+            if (alias.getId() == 0) {
+                db.insert(TABLE_ALIAS, null, values);
+                alias.setId(this.getLastInsertedId(db, TABLE_ALIAS));
+            } else {
+                db.update(TABLE_ALIAS, values, ALIAS_ID + "= ?", new String[]{String.valueOf(alias.getId())});
+            }
+        }
+
         for (Section section : article.getSections()){
 
             values = new ContentValues();
@@ -182,7 +230,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             } else {
                 db.update(TABLE_SECTION, values, SECTION_ID + "= ?",  new String[] { String.valueOf(section.getId()) });
             }
-
 
             for (SectionContent sectionContent : section.getSectionContents()){
 
@@ -199,6 +246,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     db.update(TABLE_SECTION_CONTENT, values, SECTION_CONTENT_ID + "= ?",  new String[] { String.valueOf(sectionContent.getId()) });
                 }
 
+                for (LinkedArticle linkedArticle : sectionContent.getLinkedArticles()){
+
+                    values = new ContentValues();
+
+                    values.put(LINKED_ARTICLE_SECTION_CONTENT_ID, sectionContent.getId());
+                    values.put(LINKED_ARTICLE_ALIAS, linkedArticle.getAlias());
+
+                    if (linkedArticle.getId() == 0){
+                        db.insert(TABLE_LINKED_ARTICLE, null, values);
+                        linkedArticle.setId(this.getLastInsertedId(db, TABLE_LINKED_ARTICLE));
+                    } else {
+                        db.update(TABLE_LINKED_ARTICLE, values, LINKED_ARTICLE_ID + "= ?",  new String[] { String.valueOf(linkedArticle.getId()) });
+                    }
+                }
+
                 for (ListElement listElement : sectionContent.getListElements()){
 
                     values = new ContentValues();
@@ -212,6 +274,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     } else {
                         db.update(TABLE_LIST_ELEMENT, values, LIST_ELEMENT_ID + "= ?",  new String[] { String.valueOf(listElement.getId()) });
                     }
+
+                    for (LinkedArticle linkedArticle : listElement.getLinkedArticles()){
+
+                        values = new ContentValues();
+
+                        values.put(LINKED_ARTICLE_LIST_ELEMENT_ID, listElement.getId());
+                        values.put(LINKED_ARTICLE_ALIAS, linkedArticle.getAlias());
+
+                        if (linkedArticle.getId() == 0){
+                            db.insert(TABLE_LINKED_ARTICLE, null, values);
+                            linkedArticle.setId(this.getLastInsertedId(db, TABLE_LINKED_ARTICLE));
+                        } else {
+                            db.update(TABLE_LINKED_ARTICLE, values, LINKED_ARTICLE_ID + "= ?",  new String[] { String.valueOf(linkedArticle.getId()) });
+                        }
+                    }
+
                 }
             }
 
@@ -334,14 +412,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     Article getArticle(int id) {
-        return this.getArticle(ARTICLE_ID, id);
-    }
 
-    Article getArticle(String title) {
-        return this.getArticle(ARTICLE_TITLE, title);
-    }
+        String field = ARTICLE_ID;
 
-    private Article getArticle(String field, Object value) {
+        Object value = id;
+
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_ARTICLE, new String[] {
@@ -356,8 +431,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 }, field + "=?",
                 new String[] { String.valueOf(value) }, null, null, null, null);
 
-        if (cursor != null)
-            cursor.moveToFirst();
+        Article article = null;
+
+        if (cursor.moveToFirst()){
+            article = this.getArticle(db, cursor);
+        }
+
+        return article;
+    }
+
+    Article getArticle(String title) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT " + TABLE_ARTICLE + ".* FROM " + TABLE_ARTICLE
+                            + " JOIN " + TABLE_ALIAS
+                            + " ON " + TABLE_ARTICLE + "." + ARTICLE_ID + " = " + TABLE_ALIAS + "." + ALIAS_ARTICLE_ID
+                            + " WHERE " + TABLE_ALIAS + "." + ALIAS_TITLE + " = " + "'" + title + "'";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        Article article = null;
+
+        if (cursor.moveToFirst()){
+            article = this.getArticle(db, cursor);
+        }
+
+        return article;
+    }
+
+    private Article getArticle(SQLiteDatabase db, Cursor cursor) {
 
         Article article = new Article();
 
@@ -453,6 +555,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 selectQuery = "SELECT  * FROM " + TABLE_LIST_ELEMENT + " WHERE " + LIST_ELEMENT_SECTION_CONTENT_ID + " IN (" + ids + ")";
                 cursor = db.rawQuery(selectQuery, null);
 
+                HashMap<Integer, ListElement> listElementHashMap = new HashMap<Integer, ListElement>();
+
                 if (cursor.moveToFirst()) {
                     do {
                         ListElement listElement = new ListElement();
@@ -465,6 +569,52 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
                         listElement.setId(cursor.getInt(cursor.getColumnIndex(LIST_ELEMENT_ID)));
                         listElement.setText(cursor.getString(cursor.getColumnIndex(LIST_ELEMENT_TEXT)));
+
+                        listElementHashMap.put(listElement.getId(), listElement);
+
+                    } while (cursor.moveToNext());
+                }
+
+                if (listElementHashMap.isEmpty()){
+                    listElementHashMap.put(-1, null);
+                }
+
+                String listElementIds = TextUtils.join(",", listElementHashMap.keySet());
+
+
+                //LinkedArticles
+                selectQuery = "SELECT  * FROM " + TABLE_LINKED_ARTICLE
+                                + " WHERE (" + LINKED_ARTICLE_SECTION_CONTENT_ID + " IN (" + ids + ")"
+                                + " OR " + LINKED_ARTICLE_LIST_ELEMENT_ID + " IN (" + listElementIds + "))"
+                                + " AND " + LINKED_ARTICLE_ALIAS + " IN (SELECT " + ALIAS_TITLE  + " FROM " + TABLE_ALIAS + ")";
+                cursor = db.rawQuery(selectQuery, null);
+
+                if (cursor.moveToFirst()) {
+                    do {
+                        LinkedArticle linkedArticle = new LinkedArticle();
+
+                        linkedArticle.setId(cursor.getInt(cursor.getColumnIndex(LINKED_ARTICLE_ID)));
+
+                        int sectionConentId = cursor.getInt(cursor.getColumnIndex(LINKED_ARTICLE_SECTION_CONTENT_ID));
+                        int listElementId = cursor.getInt(cursor.getColumnIndex(LINKED_ARTICLE_LIST_ELEMENT_ID));
+
+                        if (sectionConentId != 0){
+                            SectionContent sectionContent = sectionContentHashMap.get(sectionConentId);
+
+                            sectionContent.getLinkedArticles().add(linkedArticle);
+                            linkedArticle.setSectionContent(sectionContent);
+
+                        } else if (listElementId != 0) {
+
+                            ListElement listElement = listElementHashMap.get(listElementId);
+
+                            listElement.getLinkedArticles().add(linkedArticle);
+                            linkedArticle.setListElement(listElement);
+
+                        }
+
+                        linkedArticle.setAlias(cursor.getString(cursor.getColumnIndex(LINKED_ARTICLE_ALIAS)));
+
 
                     } while (cursor.moveToNext());
                 }

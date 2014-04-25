@@ -17,9 +17,11 @@ public class Article {
     private String thumbnail;
     private String originalDimensions;
     private List<Section> sections;
+    private List<Alias> aliases;
 
     public Article(){
         this.sections = new ArrayList<Section>();
+        this.aliases = new ArrayList<Alias>();
     }
 
     public int getId() {
@@ -92,5 +94,13 @@ public class Article {
 
     public void setSections(List<Section> sections) {
         this.sections = sections;
+    }
+
+    public List<Alias> getAliases() {
+        return aliases;
+    }
+
+    public void setAliases(List<Alias> aliases) {
+        this.aliases = aliases;
     }
 }

@@ -13,9 +13,11 @@ public class SectionContent {
     private String type;
     private String text;
     private List<ListElement> listElements;
+    private List<LinkedArticle> linkedArticles;
 
     public SectionContent() {
         this.listElements = new ArrayList<ListElement>();
+        this.linkedArticles = new ArrayList<LinkedArticle>();
     }
 
     public int getId() {
@@ -57,4 +59,13 @@ public class SectionContent {
     public void setListElements(List<ListElement> listElements) {
         this.listElements = listElements;
     }
+
+    public List<LinkedArticle> getLinkedArticles() {
+        return linkedArticles;
+    }
+
+    public void setLinkedArticles(List<LinkedArticle> linkedArticles) {
+        this.linkedArticles = linkedArticles;
+    }
+
 }

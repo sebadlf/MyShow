@@ -2,7 +2,9 @@ package com.synergysolutions.myshow.app;
 
 import android.os.AsyncTask;
 
+import com.synergysolutions.myshow.app.Entity.Alias;
 import com.synergysolutions.myshow.app.Entity.Article;
+import com.synergysolutions.myshow.app.Entity.LinkedArticle;
 import com.synergysolutions.myshow.app.Entity.ListElement;
 import com.synergysolutions.myshow.app.Entity.Section;
 import com.synergysolutions.myshow.app.Entity.SectionContent;
@@ -48,6 +50,19 @@ public class ArticlesJsonAsyncTaskAsyncTask extends AsyncTask<String, Integer, L
                 article.setTeaser(articleJson.getString("teaser"));
                 article.setThumbnail(articleJson.getString("thumbnail"));
 
+                JSONArray aliasesJson = articleJson.getJSONArray("aliases");
+
+                for (int aliasId = 0; aliasId < aliasesJson.length(); aliasId++) {
+
+                    JSONObject sectionJson = (JSONObject) aliasesJson.get(aliasId);
+
+                    Alias alias = new Alias();
+                    alias.setArticle(article);
+                    alias.setTitle(sectionJson.getString("title"));
+
+                    article.getAliases().add(alias);
+                }
+
                 JSONArray sectionsJson = articleJson.getJSONArray("sections");
 
                 for (int sectionId = 0; sectionId < sectionsJson.length(); sectionId++) {
@@ -74,6 +89,21 @@ public class ArticlesJsonAsyncTaskAsyncTask extends AsyncTask<String, Integer, L
 
                         section.getSectionContents().add(sectionContent);
 
+                        //LinkedArticle
+
+                        JSONArray linkedArticlesJson = sectionContentJson.getJSONArray("links");
+
+                        for (int linkedArticleId = 0; linkedArticleId < linkedArticlesJson.length(); linkedArticleId++) {
+
+                            JSONObject linkedArticleJson = (JSONObject) linkedArticlesJson.get(linkedArticleId);
+
+                            LinkedArticle linkedArticle = new LinkedArticle();
+                            linkedArticle.setSectionContent(sectionContent);
+                            linkedArticle.setAlias(linkedArticleJson.getString("alias"));
+
+                            sectionContent.getLinkedArticles().add(linkedArticle);
+                        }
+
                         //ListElement
 
                         JSONArray listElementsJson = sectionContentJson.getJSONArray("elements");
@@ -87,6 +117,21 @@ public class ArticlesJsonAsyncTaskAsyncTask extends AsyncTask<String, Integer, L
                             listElement.setText(listElementJson.getString("text"));
 
                             sectionContent.getListElements().add(listElement);
+
+                            //LinkedArticle
+                            linkedArticlesJson = listElementJson.getJSONArray("links");
+
+                            for (int linkedArticleId = 0; linkedArticleId < linkedArticlesJson.length(); linkedArticleId++) {
+
+                                JSONObject linkedArticleJson = (JSONObject) linkedArticlesJson.get(linkedArticleId);
+
+                                LinkedArticle linkedArticle = new LinkedArticle();
+                                linkedArticle.setListElement(listElement);
+                                linkedArticle.setAlias(linkedArticleJson.getString("alias"));
+
+                                listElement.getLinkedArticles().add(linkedArticle);
+                            }
+
                         }
                     }
 
