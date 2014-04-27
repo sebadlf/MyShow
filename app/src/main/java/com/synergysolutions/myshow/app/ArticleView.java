@@ -97,7 +97,7 @@ public class ArticleView extends ActionBarActivity {
 
             myLayout.addView(imageView);
 
-            new DownloadImageTask(imageView).execute(url);
+            new DownloadImageTask(this.getApplicationContext(), imageView).execute(url);
 
         }
 
@@ -170,7 +170,7 @@ public class ArticleView extends ActionBarActivity {
 
             myLayout.addView(imageView);
 
-            new DownloadImageTask(imageView).execute(url);
+            new DownloadImageTask(this.getApplicationContext(), imageView).execute(url);
 
             if ((sectionImage.getCaption() != null) && (sectionImage.getCaption().length() > 0)){
                 TextView textView = new TextView(this);

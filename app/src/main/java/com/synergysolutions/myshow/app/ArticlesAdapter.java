@@ -63,7 +63,7 @@ public class ArticlesAdapter extends BaseAdapter {
         imgThombnail.setImageResource(R.drawable.logo);
 
         if ((article.getThumbnail() != null) && (article.getThumbnail().startsWith("http"))){
-            new DownloadImageTask(imgThombnail).execute(article.getThumbnail());
+            new DownloadImageTask(context,  imgThombnail).execute(article.getThumbnail());
         }
 
         TextView txtNombre = (TextView) convertView.findViewById(R.id.nombre);
