@@ -18,6 +18,7 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
 
 /**
  * Created by sebadlf on 24/04/14.
@@ -25,11 +26,11 @@ import java.io.UnsupportedEncodingException;
 public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     private static final String LOG_TAG = "DownloadImageTask";
     private final Context context;
-    ImageView bmImage;
+    WeakReference<ImageView> bmImage;
 
     public DownloadImageTask(Context context, ImageView bmImage) {
         this.context = context;
-        this.bmImage = bmImage;
+        this.bmImage = new WeakReference<ImageView>(bmImage);
     }
 
     protected Bitmap doInBackground(String... urls) {
@@ -77,9 +78,15 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
     protected void onPostExecute(Bitmap result) {
 
-        bmImage.setImageBitmap(result);
+        if (bmImage != null) {
+            ImageView imageView = bmImage.get();
 
-        bmImage.setBackgroundColor(Color.RED);
+            if (imageView != null) {
+                imageView.setImageBitmap(result);
+
+                imageView.setBackgroundColor(Color.RED);
+            }
+        }
 
             /*
             int lines = (int)Math.round(bmImage.getDrawable().getIntrinsicHeight() / descriptionTextView.getLineHeight());
