@@ -23,42 +23,40 @@
         <activity
             android:name="com.synergysolutions.myshow.app.ArticleView"
             android:label="@string/title_activity_article_view" >
-
             <intent-filter>
-
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <action android:name="android.intent.action.VIEW" />
 
                 <data android:scheme="com.synergysolutions.myshow.article" />
-
             </intent-filter>
-
         </activity>
-
-
-        <activity android:name="com.startapp.android.publish.list3d.List3DActivity"
+        <activity
+            android:name="com.startapp.android.publish.list3d.List3DActivity"
             android:taskAffinity="com.synergysolutions.myshow.app.AppWall"
             android:theme="@android:style/Theme" />
-
-        <activity android:name="com.startapp.android.publish.AppWallActivity"
-            android:theme="@android:style/Theme.Translucent"
+        <activity
+            android:name="com.startapp.android.publish.AppWallActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:taskAffinity="com.synergysolutions.myshow.app.AppWall"
-            android:configChanges="orientation|keyboardHidden" />
-
-
+            android:theme="@android:style/Theme.Translucent" />
+        <activity
+            android:name="com.synergysolutions.myshow.app.Entity.SectionsActivity"
+            android:label="@string/title_activity_sections" >
+        </activity>
+        <activity
+            android:name="com.synergysolutions.myshow.app.SectionsActivity"
+            android:label="@string/title_activity_sections" >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     //These permissions are only required for showing the ad when pressing the Home button
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-permission android:name="android.permission.GET_TASKS"/>
-
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
 
 </manifest>

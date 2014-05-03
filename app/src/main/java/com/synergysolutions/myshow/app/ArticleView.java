@@ -62,6 +62,7 @@ public class ArticleView extends ActionBarActivity {
         Bundle extras = this.getIntent().getExtras();
 
         int id = extras.getInt("wikiaId");
+        String title = extras.getString("title");
 
         db = new DatabaseHandler(this);
 
@@ -69,6 +70,8 @@ public class ArticleView extends ActionBarActivity {
 
         if (id != 0) {
             article = db.getArticle(id);
+        } else if ((title != null) && (title.length() > 0)) {
+            article = db.getArticle(title);
         } else {
             Uri data = getIntent().getData();
 
@@ -76,7 +79,7 @@ public class ArticleView extends ActionBarActivity {
 
                 String url = data.toString();
 
-                String title = url.replace("com.synergysolutions.myshow.article://", "");
+                title = url.replace("com.synergysolutions.myshow.article://", "");
 
                 article = db.getArticle(title);
             }
