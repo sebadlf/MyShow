@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sections">
+        <item>Characters|||logo</item>
+        <item>Episodes|||logo</item>
+    </string-array>
+
+    <string-array name="characters">
+        <item>Characters|||logo</item>
+        <item>Episodes|||logo</item>
+    </string-array>
+
+    <string-array name="episodes">
+        <item>Season 1|||logo</item>
+        <item>Season 2|||logo</item>
+    </string-array>
+
+
+
+</resources>

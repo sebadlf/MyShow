@@ -16,10 +16,18 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
 import android.text.util.Linkify;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.Gallery;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -128,8 +136,63 @@ public class ArticleView extends ActionBarActivity {
 
         }
 
+        /*
         for(SectionImage sectionImage : section.getSectionImages()){
             this.drawSectionImage(myLayout, sectionImage);
+        }
+        */
+
+        if (section.getSectionImages().size() > 0){
+
+            HorizontalScrollView horizontalScrollView = new HorizontalScrollView(this);
+
+            LinearLayout linearLayout = new LinearLayout(this);
+            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+            horizontalScrollView.setBackgroundColor(getResources().getColor(android.R.color.black));
+
+            horizontalScrollView.addView(linearLayout);
+
+            for(SectionImage sectionImage : section.getSectionImages()){
+
+                ImageView i = new ImageView(this);
+
+                i.setImageResource(R.drawable.logo);
+
+                i.setMaxHeight(200);
+                i.setMaxWidth(200);
+
+                i.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+                new DownloadImageTask(this, i).execute(sectionImage.getSrc());
+
+                linearLayout.addView(i);
+            }
+
+            horizontalScrollView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    int action = event.getAction();
+                    switch (action) {
+                        case MotionEvent.ACTION_DOWN:
+                            // Disallow ScrollView to intercept touch events.
+                            v.getParent().requestDisallowInterceptTouchEvent(true);
+                            break;
+
+                        case MotionEvent.ACTION_UP:
+                            // Allow ScrollView to intercept touch events.
+                            v.getParent().requestDisallowInterceptTouchEvent(false);
+                            break;
+                    }
+
+                    // Handle HorizontalScrollView touch events.
+                    v.onTouchEvent(event);
+                    return true;
+                }
+            });
+
+
+            myLayout.addView(horizontalScrollView);
         }
     }
 
@@ -160,9 +223,14 @@ public class ArticleView extends ActionBarActivity {
 
         }
 
+
+        int rId = getResources().getIdentifier("logo", "drawable", this.getApplicationContext().getPackageName());
+
+        int a = 1;
     }
 
     private void drawSectionImage(LinearLayout myLayout, SectionImage sectionImage) {
+            /*
 
             ImageView imageView = new ImageView(this);
 
@@ -179,6 +247,8 @@ public class ArticleView extends ActionBarActivity {
 
                 myLayout.addView(textView);
             }
+
+            */
 
     }
 

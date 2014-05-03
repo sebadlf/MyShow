@@ -11,6 +11,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -39,33 +41,38 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         try {
             File file = this.getImageFile(context, urldisplay);
 
-            if (file.exists()){
+            if (file.exists()) {
 
                 mIcon11 = BitmapFactory.decodeStream(new FileInputStream(file));
 
             } else {
 
-                if (!file.mkdirs()) {
-                    Log.e(LOG_TAG, "Directory not created");
-                }
-
                 InputStream inputStream = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(inputStream);
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                byte[] buffer = new byte[1024];
+                int len;
 
                 if (this.isExternalStorageWritable()) {
 
                     FileOutputStream fileOutputStream = new FileOutputStream(file);
 
-                    int read = 0;
-                    byte[] bytes = new byte[1024];
-
-                    while ((read = inputStream.read(bytes)) != -1) {
-                        fileOutputStream.write(bytes, 0, read);
+                    while ((len = inputStream.read(buffer)) > -1) {
+                        baos.write(buffer, 0, len);
+                        fileOutputStream.write(buffer, 0, len);
                     }
 
-                    inputStream.close();
                     fileOutputStream.close();
+
+                } else {
+                    while ((len = inputStream.read(buffer)) > -1) {
+                        baos.write(buffer, 0, len);
+                    }
                 }
+
+                baos.flush();
+
+                mIcon11 = BitmapFactory.decodeStream(new ByteArrayInputStream(baos.toByteArray()));
 
             }
 
@@ -116,6 +123,14 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
             */
     }
 
+    public boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
     /* Checks if external storage is available for read and write */
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
@@ -127,12 +142,9 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
     public File getImageFile(Context context, String photoUrl) {
 
-        photoUrl = photoUrl.replace("/", "-").replace(":", "-").replace(".", "-").replace("%", "-");
+        String fileName = photoUrl.substring(photoUrl.lastIndexOf('/') + 1, photoUrl.length());
 
-        // Get the directory for the app's private pictures directory.
-        File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), photoUrl + ".png");
-
-        boolean ex = file.exists();
+        File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName);
 
         return file;
     }

@@ -335,6 +335,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String selectQuery = "SELECT  * FROM " + TABLE_ARTICLE;
 
         SQLiteDatabase db = this.getReadableDatabase();
+
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         HashMap<Integer, Article> articlesCache = new HashMap<Integer, Article>();
@@ -360,6 +361,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 articleList.add(article);
             } while (cursor.moveToNext());
         }
+
+        db.close();
 
         // return character list
         return articleList;
@@ -395,6 +398,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 articleList.add(article);
             } while (cursor.moveToNext());
         }
+
+        db.close();
 
         // return character list
         return articleList;
@@ -437,6 +442,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             article = this.getArticle(db, cursor);
         }
 
+        db.close();
+
         return article;
     }
 
@@ -455,6 +462,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()){
             article = this.getArticle(db, cursor);
         }
+
+        db.close();
 
         return article;
     }
