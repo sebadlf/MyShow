@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.StringTokenizer;
+
 public class SectionsActivity extends Activity {
 
     @Override
@@ -19,8 +21,12 @@ public class SectionsActivity extends Activity {
         setContentView(R.layout.activity_sections);
 
         Bundle extras = this.getIntent().getExtras();
-        String title = extras.getString("title");
 
+        String title = null;
+
+        if (extras != null) {
+            title = extras.getString("Section");
+        }
 
         String[] sections;
 
@@ -36,18 +42,22 @@ public class SectionsActivity extends Activity {
 
         for (final String section : sections){
 
-            String[] parts = section.split("|||");
+            StringTokenizer stringTokenizer = new StringTokenizer(section, "|||");
 
-            title = parts[0];
+            title = stringTokenizer.nextToken();
             String icon;
-            if (parts.length == 2){
-                icon = parts[1];
+            if (stringTokenizer.hasMoreTokens()){
+                icon = stringTokenizer.nextToken();
             }
 
             TextView textView = new TextView(this);
-            linearLayout.addView(textView);
 
             textView.setText(title);
+
+            linearLayout.addView(textView);
+
+
+
 
             final String finalTitle = title;
             textView.setOnClickListener(new View.OnClickListener() {
@@ -58,6 +68,7 @@ public class SectionsActivity extends Activity {
                     startActivity(intent);
                 }
             });
+
         }
     }
 }
