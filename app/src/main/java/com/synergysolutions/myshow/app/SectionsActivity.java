@@ -25,13 +25,13 @@ public class SectionsActivity extends Activity {
         String title = null;
 
         if (extras != null) {
-            title = extras.getString("Section");
+            title = extras.getString("section");
         }
 
         String[] sections;
 
         if ((title != null) && (title.length() > 0)){
-            int resourceId = getResources().getIdentifier(title, "values", this.getPackageName());
+            int resourceId = getResources().getIdentifier(title.toLowerCase(), "array", this.getPackageName());
 
             sections = getResources().getStringArray(resourceId);
         } else {
@@ -56,15 +56,23 @@ public class SectionsActivity extends Activity {
 
             linearLayout.addView(textView);
 
-
-
-
             final String finalTitle = title;
+            final String finalPackageName = this.getPackageName();
+
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(SectionsActivity.this, SectionsActivity.class);
-                    intent.putExtra("Section", finalTitle);
+
+                    Intent intent = null;
+
+                    if (getResources().getIdentifier(finalTitle.toLowerCase(), "array", finalPackageName) != 0){
+                        intent = new Intent(SectionsActivity.this, SectionsActivity.class);
+                        intent.putExtra("section", finalTitle);
+                    } else {
+                        intent = new Intent(SectionsActivity.this, ArticleView.class);
+                        intent.putExtra("title", finalTitle);
+                    }
+
                     startActivity(intent);
                 }
             });

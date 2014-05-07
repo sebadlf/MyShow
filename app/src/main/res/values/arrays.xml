@@ -6,15 +6,36 @@
     </string-array>
 
     <string-array name="characters">
-        <item>Characters|||logo</item>
-        <item>Episodes|||logo</item>
+        <item>Skye</item>
+        <item>Grant Douglas Ward</item>
+        <item>Melinda Qiaolian May</item>
+        <item>Phillip Coulson</item>
+        <item>Jemma Simmons</item>
+        <item>Leopold \"Leo\" Fitz</item>
     </string-array>
 
     <string-array name="episodes">
-        <item>Season 1|||logo</item>
-        <item>Season 2|||logo</item>
+        <item>Pilot</item>
+        <item>0-8-4</item>
+        <item>The Asset</item>
+        <item>Eye-Spy</item>
+        <item>Girl in the Flower Dress</item>
+        <item>FZZT</item>
+        <item>The Hub</item>
+        <item>The Well</item>
+        <item>Repairs</item>
+        <item>The Bridge</item>
+        <item>The Magical Place</item>
+        <item>Seeds</item>
+        <item>T.R.A.C.K.S.</item>
+        <item>T.A.H.I.T.I.</item>
+        <item>Yes Men</item>
+        <item>End Of The Beginning</item>
+        <item>Turn, Turn, Turn</item>
+        <item>Providence</item>
+        <item>The Only Light in the Darkness</item>
+        <item>Nothing Personal</item>
+        <item>Ragtag</item>
+        <item>Beginning of the End</item>
     </string-array>
-
-
-
 </resources>
