@@ -71,7 +71,7 @@ public class ArticleView extends ActionBarActivity {
         if (id != 0) {
             article = db.getArticle(id);
         } else if ((title != null) && (title.length() > 0)) {
-            article = db.getArticle(title);
+            article = db.getArticle(title, true);
         } else {
             Uri data = getIntent().getData();
 
@@ -81,7 +81,7 @@ public class ArticleView extends ActionBarActivity {
 
                 title = url.replace("com.synergysolutions.myshow.article://", "");
 
-                article = db.getArticle(title);
+                article = db.getArticle(title, true);
             }
         }
 

@@ -439,7 +439,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Article article = null;
 
         if (cursor.moveToFirst()){
-            article = this.getArticle(db, cursor);
+            article = this.getArticle(db, cursor, true);
         }
 
         db.close();
@@ -447,7 +447,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return article;
     }
 
-    Article getArticle(String title) {
+    Article getArticle(String title, boolean getSections) {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -460,7 +460,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Article article = null;
 
         if (cursor.moveToFirst()){
-            article = this.getArticle(db, cursor);
+            article = this.getArticle(db, cursor, getSections);
         }
 
         db.close();
@@ -468,7 +468,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return article;
     }
 
-    private Article getArticle(SQLiteDatabase db, Cursor cursor) {
+    private Article getArticle(SQLiteDatabase db, Cursor cursor, boolean getSections) {
 
         Article article = new Article();
 
