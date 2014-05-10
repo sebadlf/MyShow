@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.startapp.android.publish.StartAppAd;
 import com.startapp.android.publish.banner.banner3d.Banner3D;
