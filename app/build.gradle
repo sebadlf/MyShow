@@ -4,7 +4,8 @@ android {
     compileSdkVersion 19
     buildToolsVersion '19.0.2'
 
-    defaultConfig {c:\
+    defaultConfig {
+        c:
         minSdkVersion 10
         targetSdkVersion 19
         versionCode 1
@@ -30,9 +31,9 @@ android {
 }
 
 dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile files('src/main/libs/StartAppInApp-2.3.1.jar')
     compile 'com.android.support:gridlayout-v7:19.0.1'
     compile 'com.android.support:support-v4:19.0.1'
     compile 'com.android.support:appcompat-v7:19.0.1'
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile files('src/main/libs/StartAppInApp-2.3.1.jar')
 }
