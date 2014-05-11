@@ -147,6 +147,7 @@ public class ArticleView extends ActionBarActivity {
         }
         */
 
+        /*
         if (section.getSectionImages().size() > 0){
 
             HorizontalScrollView horizontalScrollView = new HorizontalScrollView(this);
@@ -198,6 +199,19 @@ public class ArticleView extends ActionBarActivity {
 
 
             myLayout.addView(horizontalScrollView);
+        }
+        */
+
+        if (section.getSectionImages().size() > 0) {
+            Gallery gallery = new Gallery(this);
+
+            GalleryAdapter galleryAdapter = new GalleryAdapter(this, section.getSectionImages());
+
+            gallery.setAdapter(galleryAdapter);
+
+            gallery.setSelection(1);
+
+            myLayout.addView(gallery);
         }
     }
 
