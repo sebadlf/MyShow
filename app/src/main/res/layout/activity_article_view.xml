@@ -9,12 +9,7 @@
     android:orientation="vertical"
     tools:context="com.synergysolutions.myshow.app.ArticleView">
 
-    <TextView
-        android:id="@+id/ArticleTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <ScrollView
+W    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -87,8 +88,7 @@ public class ArticleView extends ActionBarActivity {
             }
         }
 
-        TextView titleView = (TextView) findViewById(R.id.ArticleTitle);
-        titleView.setText(article.getTitle());
+        setTitle(article.getTitle());
 
         LinearLayout myLayout = (LinearLayout) findViewById(R.id.ArticleSections);
 
@@ -110,7 +110,7 @@ public class ArticleView extends ActionBarActivity {
 
             myLayout.addView(imageView);
 
-            new DownloadImageTask(this.getApplicationContext(), imageView).execute(url);
+            new DownloadImageTask(this, null).execute(url);
 
         }
 

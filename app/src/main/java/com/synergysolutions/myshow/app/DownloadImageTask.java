@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -27,7 +29,7 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
     public DownloadImageTask(Context context, ImageView bmImage) {
         this.context = context;
-        this.bmImage = new WeakReference<ImageView>(bmImage);
+        this.bmImage = bmImage != null ? new WeakReference<ImageView>(bmImage) : null;
     }
 
     protected Bitmap doInBackground(String... urls) {
@@ -88,6 +90,10 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
                 imageView.setBackgroundColor(Color.RED);
             }
+        } else {
+            BitmapDrawable bd = new BitmapDrawable(context.getResources(), result);
+
+            ((ActionBarActivity)context).getActionBar().setIcon(bd);
         }
 
             /*
