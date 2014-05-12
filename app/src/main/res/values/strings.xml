@@ -7,5 +7,6 @@
     <string name="title_activity_demo_list">DemoList</string>
     <string name="title_activity_article_view">ArticleView</string>
     <string name="title_activity_sections">SectionsActivity</string>
+    <string name="title_activity_splash">SplashActivity</string>
 
 </resources>

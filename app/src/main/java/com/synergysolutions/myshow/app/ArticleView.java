@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -13,7 +14,9 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
 import android.text.style.ImageSpan;
+import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Gravity;
@@ -85,8 +88,7 @@ public class ArticleView extends ActionBarActivity {
             }
         }
 
-        TextView titleView = (TextView) findViewById(R.id.ArticleTitle);
-        titleView.setText(article.getTitle());
+        setTitle(article.getTitle());
 
         LinearLayout myLayout = (LinearLayout) findViewById(R.id.ArticleSections);
 
@@ -108,7 +110,7 @@ public class ArticleView extends ActionBarActivity {
 
             myLayout.addView(imageView);
 
-            new DownloadImageTask(this.getApplicationContext(), imageView).execute(url);
+            new DownloadImageTask(this, null).execute(url);
 
         }
 
@@ -145,6 +147,7 @@ public class ArticleView extends ActionBarActivity {
         }
         */
 
+        /*
         if (section.getSectionImages().size() > 0){
 
             HorizontalScrollView horizontalScrollView = new HorizontalScrollView(this);
@@ -196,6 +199,19 @@ public class ArticleView extends ActionBarActivity {
 
 
             myLayout.addView(horizontalScrollView);
+        }
+        */
+
+        if (section.getSectionImages().size() > 0) {
+            Gallery gallery = new Gallery(this);
+
+            GalleryAdapter galleryAdapter = new GalleryAdapter(this, section.getSectionImages());
+
+            gallery.setAdapter(galleryAdapter);
+
+            gallery.setSelection(1);
+
+            myLayout.addView(gallery);
         }
     }
 
@@ -274,6 +290,8 @@ public class ArticleView extends ActionBarActivity {
             String userViewURL = "com.synergysolutions.myshow.article://";
 
             Linkify.addLinks(textView, userMatcher, userViewURL);
+
+            this.stripUnderlines(textView);
         }
     }
 
@@ -296,5 +314,31 @@ public class ArticleView extends ActionBarActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private class URLSpanNoUnderline extends URLSpan {
+        public URLSpanNoUnderline(String url) {
+            super(url);
+        }
+        @Override public void updateDrawState(TextPaint ds) {
+            super.updateDrawState(ds);
+            ds.setUnderlineText(false);
+
+            ds.setFakeBoldText(true);
+            ds.setColor(Color.BLACK);
+        }
+    }
+
+    private void stripUnderlines(TextView textView) {
+        Spannable s = (Spannable)textView.getText();
+        URLSpan[] spans = s.getSpans(0, s.length(), URLSpan.class);
+        for (URLSpan span: spans) {
+            int start = s.getSpanStart(span);
+            int end = s.getSpanEnd(span);
+            s.removeSpan(span);
+            span = new URLSpanNoUnderline(span.getURL());
+            s.setSpan(span, start, end, 0);
+        }
+        textView.setText(s);
     }
 }
