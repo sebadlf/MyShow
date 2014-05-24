@@ -35,6 +35,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.startapp.android.publish.StartAppAd;
 import com.synergysolutions.myshow.app.Entity.Article;
 import com.synergysolutions.myshow.app.Entity.LinkedArticle;
 import com.synergysolutions.myshow.app.Entity.ListElement;
@@ -60,6 +61,9 @@ public class ArticleView extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        StartAppAd.init(this, "104220702", "204133814");
+
         setContentView(R.layout.activity_article_view);
 
         Bundle extras = this.getIntent().getExtras();

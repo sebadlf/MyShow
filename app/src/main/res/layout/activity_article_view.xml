@@ -9,9 +9,10 @@
     android:orientation="vertical"
     tools:context="com.synergysolutions.myshow.app.ArticleView">
 
-W    <ScrollView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
         <LinearLayout
             android:id="@+id/ArticleSections"
@@ -19,7 +20,17 @@ W    <ScrollView
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <!-- Content here -->
+
+
+
         </LinearLayout>
+
+
     </ScrollView>
+
+    <com.startapp.android.publish.banner.Banner
+        android:id="@+id/startAppBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>
