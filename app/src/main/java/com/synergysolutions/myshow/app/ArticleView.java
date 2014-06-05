@@ -92,7 +92,13 @@ public class ArticleView extends ActionBarActivity {
             }
         }
 
-        setTitle(article.getTitle());
+        title = article.getTitle().trim();
+
+        if(title.startsWith("\"") && title.endsWith("\"")){
+            title = title.substring(1, title.length() - 3);
+        }
+
+        setTitle(title);
 
         LinearLayout myLayout = (LinearLayout) findViewById(R.id.ArticleSections);
 
@@ -211,9 +217,13 @@ public class ArticleView extends ActionBarActivity {
 
             GalleryAdapter galleryAdapter = new GalleryAdapter(this, section.getSectionImages());
 
+            gallery.setSpacing(2);
+
             gallery.setAdapter(galleryAdapter);
 
-            gallery.setSelection(1);
+            if (section.getSectionImages().size() > 1) {
+                gallery.setSelection(1);
+            }
 
             myLayout.addView(gallery);
         }

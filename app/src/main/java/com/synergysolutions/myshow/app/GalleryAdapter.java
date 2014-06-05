@@ -26,7 +26,7 @@ public class GalleryAdapter extends BaseAdapter {
 
     private Context context;
 
-    public GalleryAdapter(Context context, List<SectionImage> urlList){
+    public GalleryAdapter(Context context, List<SectionImage> urlList) {
         this.context = context;
 
         this.urlList = urlList;
@@ -46,16 +46,17 @@ public class GalleryAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return ((SectionImage)this.getItem(position)).getId();
+        return ((SectionImage) this.getItem(position)).getId();
     }
 
+    /*
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        /*
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.activity_demo_list_row, null);
-        }
-        */
+
+        //if (convertView == null) {
+        //    convertView = inflater.inflate(R.layout.activity_demo_list_row, null);
+        //}
+
 
         SectionImage sectionImage = (SectionImage)this.getItem(position);
 
@@ -70,6 +71,19 @@ public class GalleryAdapter extends BaseAdapter {
 
         return i;
     }
+    */
 
+    // Override this method according to your need
+    public View getView(int index, View view, ViewGroup viewGroup) {
+        // TODO Auto-generated method stub
 
+        ImageView i = new ImageView(context);
+
+        i.setImageResource(R.drawable.logo);
+        i.setLayoutParams(new Gallery.LayoutParams(200, 200));
+
+        i.setScaleType(ImageView.ScaleType.FIT_XY);
+
+        return i;
+    }
 }
