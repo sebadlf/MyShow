@@ -9,6 +9,6 @@ import java.util.List;
  */
 public interface IArticlesJsonResultProcessor {
 
-    DownloadResult OnArticlesJsonResultFinish(List<Article> articleList);
+    void OnArticlesJsonResultFinish(List<Article> articleList);
 
 }

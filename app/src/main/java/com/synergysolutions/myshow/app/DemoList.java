@@ -1,5 +1,6 @@
 package com.synergysolutions.myshow.app;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -12,12 +13,6 @@ import android.widget.Toast;
 
 import com.synergysolutions.myshow.app.Entity.Article;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -85,14 +80,14 @@ public class DemoList extends ActionBarActivity implements AdapterView.OnItemCli
 
             Toast.makeText(this, "Parsing Data", Toast.LENGTH_LONG).show();
 
-            new ArticlesJsonAsyncTaskAsyncTask(this).execute(downloadResult.getResultBody());
+            new ArticlesJsonAsyncTask(this).execute(downloadResult.getResultBody());
         }
 
         return null;
     }
 
     @Override
-    public DownloadResult OnArticlesJsonResultFinish(List<Article> articleList) {
+    public void OnArticlesJsonResultFinish(List<Article> articleList) {
 
         Toast.makeText(this, "Data Inserts", Toast.LENGTH_LONG).show();
 
@@ -105,8 +100,6 @@ public class DemoList extends ActionBarActivity implements AdapterView.OnItemCli
         Toast.makeText(this, "Data Inserts Done", Toast.LENGTH_LONG).show();
 
         new ArticlesLoaderAsyncTask(this).execute();
-
-        return null;
     }
 
     @Override
@@ -124,5 +117,4 @@ public class DemoList extends ActionBarActivity implements AdapterView.OnItemCli
 
         startActivity(intent);
     }
-
 }

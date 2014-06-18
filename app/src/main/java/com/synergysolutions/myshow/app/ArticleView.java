@@ -1,5 +1,6 @@
 package com.synergysolutions.myshow.app;
 
+import android.app.Activity;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,6 +27,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.Gallery;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -47,12 +49,11 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 
 public class ArticleView extends ActionBarActivity {
-
-    TextView descriptionTextView;
 
     DatabaseHandler db;
 
@@ -92,25 +93,9 @@ public class ArticleView extends ActionBarActivity {
             }
         }
 
-        title = article.getTitle().trim();
-
-        if(title.startsWith("\"") && title.endsWith("\"")){
-            title = title.substring(1, title.length() - 3);
-        }
-
-        setTitle(title);
+        setTitle(article.getTitle().trim());
 
         LinearLayout myLayout = (LinearLayout) findViewById(R.id.ArticleSections);
-
-        TextView textView = new TextView(this);
-
-        myLayout.addView(textView);
-
-        descriptionTextView = new TextView(this);
-
-        descriptionTextView.setText(article.getTeaser());
-
-        myLayout.addView(descriptionTextView);
 
         if ((article.getThumbnail() != null) && (article.getThumbnail().startsWith("http"))) {
 
@@ -121,16 +106,33 @@ public class ArticleView extends ActionBarActivity {
             myLayout.addView(imageView);
 
             new DownloadImageTask(this, null).execute(url);
-
         }
 
-        //////
         for(Section section : article.getSections()){
             this.drawSection(myLayout, section);
         }
 
-        //this.linkifyTextView(descriptionTextView);
+    }
 
+    private String stripSlayesOld(String text){
+
+        text = text.trim();
+
+        StringTokenizer st = new StringTokenizer(text, "\n");
+        StringBuilder sb = new StringBuilder();
+
+        while (st.hasMoreTokens()){
+            String token = st.nextToken();
+
+            if (token.startsWith("\"") && token.endsWith("\"")) {
+                token = "\"" + token.substring(1, token.length() - 2).trim() + "\"";
+            }
+
+            sb.append(token);
+            sb.append(System.getProperty("line.separator"));
+        }
+
+        return sb.toString();
     }
 
     private void drawSection(LinearLayout myLayout, Section section) {
@@ -140,6 +142,23 @@ public class ArticleView extends ActionBarActivity {
         textView.setText(section.getTitle() + " (" + section.getLevel() + ")");
 
         textView.setTypeface(null, Typeface.BOLD);
+
+        if(section.getLevel() == 1){
+            textView.setTextAppearance(getApplicationContext(), R.style.level1);
+            textView.setPadding(0,0,0,5);
+        } else if(section.getLevel() == 2){
+            textView.setTextAppearance(getApplicationContext(), R.style.level2);
+            textView.setPadding(0,5,0,5);
+        } else if(section.getLevel() == 3){
+            textView.setTextAppearance(getApplicationContext(), R.style.level3);
+            textView.setPadding(0,5,0,5);
+        } else if(section.getLevel() == 4){
+            textView.setTextAppearance(getApplicationContext(), R.style.level4);
+            textView.setPadding(0,5,0,5);
+        } else {
+            textView.setTextAppearance(getApplicationContext(), R.style.level5);
+            textView.setPadding(0,5,0,5);
+        }
 
         myLayout.addView(textView);
 
@@ -225,6 +244,15 @@ public class ArticleView extends ActionBarActivity {
                 gallery.setSelection(1);
             }
 
+            final Activity activity = this;
+
+            gallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Toast.makeText(activity, ((SectionImage)parent.getItemAtPosition(position)).getSrc(), Toast.LENGTH_SHORT);
+                }
+            });
+
             myLayout.addView(gallery);
         }
     }
@@ -255,11 +283,6 @@ public class ArticleView extends ActionBarActivity {
             this.linkifyTextView(textView, listElement.getLinkedArticles());
 
         }
-
-
-        int rId = getResources().getIdentifier("logo", "drawable", this.getApplicationContext().getPackageName());
-
-        int a = 1;
     }
 
     private void drawSectionImage(LinearLayout myLayout, SectionImage sectionImage) {

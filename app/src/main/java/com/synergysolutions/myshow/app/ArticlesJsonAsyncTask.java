@@ -21,13 +21,13 @@ import java.util.List;
 /**
  * Created by sdelafuente on 01/04/2014.
  */
-public class ArticlesJsonAsyncTaskAsyncTask extends AsyncTask<String, Integer, List<Article>> {
+public class ArticlesJsonAsyncTask extends AsyncTask<String, Integer, List<Article>> {
 
     private static final String TAG = "HttpGetTask";
 
     IArticlesJsonResultProcessor articlesJsonResultProcessor;
 
-    public ArticlesJsonAsyncTaskAsyncTask(IArticlesJsonResultProcessor articlesJsonResultProcessor) {
+    public ArticlesJsonAsyncTask(IArticlesJsonResultProcessor articlesJsonResultProcessor) {
         this.articlesJsonResultProcessor = articlesJsonResultProcessor;
     }
 
