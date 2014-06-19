@@ -83,7 +83,7 @@ public class SectionsActivity extends Activity {
             }
 
             TextView txtNombre = (TextView) rowView.findViewById(R.id.nombre);
-            txtNombre.setText(article.getTitle());
+            txtNombre.setText(article.getTitle() + " " + String.valueOf(article.getWikiaId()));
 
             TextView txtAlias = (TextView) rowView.findViewById(R.id.alias);
             txtAlias.setText(article.getTeaser());

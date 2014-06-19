@@ -108,6 +108,10 @@ public class ArticleView extends ActionBarActivity {
             new DownloadImageTask(this, null).execute(url);
         }
 
+        TextView textView = new TextView(this);
+        textView.setText(String.valueOf(article.getWikiaId()));
+        myLayout.addView(textView);
+
         for(Section section : article.getSections()){
             this.drawSection(myLayout, section);
         }
