@@ -5,16 +5,16 @@ package com.synergysolutions.myshow.app.Entity;
  */
 public class SectionImage {
 
-    private int id;
+    private long id;
     private Section section;
     private String src;
     private String caption;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

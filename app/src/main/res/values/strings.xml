@@ -8,5 +8,8 @@
     <string name="title_activity_article_view">ArticleView</string>
     <string name="title_activity_sections">SectionsActivity</string>
     <string name="title_activity_splash">SplashActivity</string>
+    <string name="title_activity_image_view">ImageViewActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 </resources>

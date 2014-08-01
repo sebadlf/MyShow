@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class SectionContent {
 
-    private int id;
+    private long id;
     private Section section;
     private String type;
     private String text;
@@ -20,11 +20,11 @@ public class SectionContent {
         this.linkedArticles = new ArrayList<LinkedArticle>();
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

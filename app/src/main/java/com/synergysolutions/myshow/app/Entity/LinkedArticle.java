@@ -5,7 +5,7 @@ package com.synergysolutions.myshow.app.Entity;
  */
 public class LinkedArticle {
 
-    private int id;
+    private long id;
     private SectionContent sectionContent;
     private ListElement listElement;
     private String alias;
@@ -14,11 +14,11 @@ public class LinkedArticle {
 
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

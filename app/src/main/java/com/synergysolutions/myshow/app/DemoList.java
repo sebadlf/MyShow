@@ -93,9 +93,7 @@ public class DemoList extends ActionBarActivity implements AdapterView.OnItemCli
 
         databaseHandler = new DatabaseHandler(this);
 
-        for (Article article : articleList) {
-            databaseHandler.saveArticle(article);
-        }
+        databaseHandler.insertArticles(articleList);
 
         Toast.makeText(this, "Data Inserts Done", Toast.LENGTH_LONG).show();
 

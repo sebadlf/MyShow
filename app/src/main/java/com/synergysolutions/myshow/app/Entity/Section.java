@@ -1,6 +1,5 @@
 package com.synergysolutions.myshow.app.Entity;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +8,7 @@ import java.util.List;
  */
 public class Section {
 
-    private int id;
+    private long id;
     private Article article;
     private int level;
     private String title;
@@ -21,11 +20,11 @@ public class Section {
         this.sectionImages = new ArrayList<SectionImage>();
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

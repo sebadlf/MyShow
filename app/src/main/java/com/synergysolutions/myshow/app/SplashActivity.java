@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -16,9 +17,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CountDownLatch;
+import java.util.logging.Handler;
 
 public class SplashActivity extends Activity implements IArticlesJsonResultProcessor {
 
@@ -29,27 +33,14 @@ public class SplashActivity extends Activity implements IArticlesJsonResultProce
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        /*
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                Intent mainIntent = new Intent().setClass(SplashActivity.this, MainActivity.class);
-                startActivity(mainIntent);
-                finish();//Destruimos esta activity para prevenit que el usuario retorne aqui presionando el boton Atras.
-            }
-        };
-
-        Timer timer = new Timer();
-        timer.schedule(task, splashDelay);//Pasado los 6 segundos dispara la tarea
-        */
-
         if (new DatabaseHandler(this).getArticlesCount() > 0) {
             Intent mainIntent = new Intent().setClass(SplashActivity.this, MainActivity.class);
             startActivity(mainIntent);
             finish();//Destruimos esta activity para prevenit que el usuario retorne aqui presionando el boton Atras.
         } else {
-            new ArticlesJsonAsyncTask(this).execute(this.readTextFile(this,R.raw.articles));
+            new ArticlesJsonAsyncTask(this).execute(this.readTextFile(this, R.raw.articles));
         }
+
     }
 
     private String readTextFile(Context ctx, int resId)
@@ -78,11 +69,17 @@ public class SplashActivity extends Activity implements IArticlesJsonResultProce
     @Override
     public void OnArticlesJsonResultFinish(List<Article> articleList) {
 
-        DatabaseHandler db = new DatabaseHandler(this);
+        Date start = new Date();
 
-        for (Article article : articleList) {
-            db.saveArticle(article);
-        }
+        final DatabaseHandler db = new DatabaseHandler(this);
+
+        db.insertArticles(articleList);
+
+        db.close();
+
+        long diff = new Date().getTime() - start.getTime();
+
+        Log.println(Log.DEBUG, SplashActivity.class.getName(), "Tiempo = " + diff);
 
         Intent mainIntent = new Intent().setClass(SplashActivity.this, MainActivity.class);
         startActivity(mainIntent);

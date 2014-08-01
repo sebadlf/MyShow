@@ -4,15 +4,15 @@ package com.synergysolutions.myshow.app.Entity;
  * Created by sebadlf on 22/04/14.
  */
 public class Alias {
-    private int id;
+    private long id;
     private Article article;
     private String title;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

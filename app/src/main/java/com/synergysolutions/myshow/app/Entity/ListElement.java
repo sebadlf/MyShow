@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class ListElement {
 
-    private int id;
+    private long id;
     private SectionContent sectionContent;
     private String text;
     private List<LinkedArticle> linkedArticles;
@@ -17,11 +17,11 @@ public class ListElement {
         this.linkedArticles = new ArrayList<LinkedArticle>();
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

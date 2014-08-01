@@ -8,8 +8,8 @@ import java.util.List;
  */
 public class Article {
 
-    private int id;
-    private int wikiaId;
+    private long id;
+    private long wikiaId;
     private String title;
     private String url;
     private String articleType;
@@ -24,15 +24,15 @@ public class Article {
         this.aliases = new ArrayList<Alias>();
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getWikiaId() {
+    public long getWikiaId() {
         return wikiaId;
     }
 
