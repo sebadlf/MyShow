@@ -3,7 +3,6 @@ package com.synergysolutions.myshow.app;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -19,9 +18,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
-/**
- * Created by sebadlf on 24/04/14.
- */
 public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     private static final String LOG_TAG = "DownloadImageTask";
     private final Context context;
@@ -87,8 +83,6 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
             if (imageView != null) {
                 imageView.setImageBitmap(result);
-
-                imageView.setBackgroundColor(Color.RED);
             }
         } else {
             BitmapDrawable bd = new BitmapDrawable(context.getResources(), result);

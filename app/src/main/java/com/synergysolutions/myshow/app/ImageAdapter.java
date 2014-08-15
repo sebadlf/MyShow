@@ -1,11 +1,18 @@
 package com.synergysolutions.myshow.app;
 
+import android.content.Context;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+
 public class ImageAdapter extends PagerAdapter {
     Context context;
     private int[] GalImages = new int[] {
-            R.drawable.one,
-            R.drawable.two,
-            R.drawable.three
+            R.drawable.logo,
+            R.drawable.logo_splash,
+            R.drawable.logo
     };
     ImageAdapter(Context context){
         this.context=context;
