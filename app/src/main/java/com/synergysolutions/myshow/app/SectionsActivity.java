@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.synergysolutions.myshow.app.Entity.Article;
 
 import java.util.StringTokenizer;
@@ -72,10 +74,11 @@ public class SectionsActivity extends Activity {
 
             ImageView imgThombnail = (ImageView) rowView.findViewById(R.id.thumbnail);
 
-            imgThombnail.setImageResource(R.drawable.logo);
-
             if ((article.getThumbnail() != null) && (article.getThumbnail().startsWith("http"))){
-                new DownloadImageTask(this,  imgThombnail).execute(article.getThumbnail());
+                //new DownloadImageTask(this,  imgThombnail).execute(article.getThumbnail());
+                ImageLoader.getInstance().displayImage(article.getThumbnail(), imgThombnail);
+            } else {
+                imgThombnail.setImageResource(R.drawable.logo);
             }
 
             TextView txtNombre = (TextView) rowView.findViewById(R.id.nombre);

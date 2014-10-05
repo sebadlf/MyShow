@@ -15,6 +15,11 @@
         android:layout_height="wrap_content"
         android:text="Ver Personajes"/>
 
+    <it.gmariotti.cardslib.library.view.CardListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/myList"/>
+
     <com.startapp.android.publish.banner.Banner
         android:id="@+id/startAppBanner"
         android:layout_width="wrap_content"

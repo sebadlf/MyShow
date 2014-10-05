@@ -7,10 +7,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.synergysolutions.myshow.app.Entity.Article;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.synergysolutions.myshow.app.Entity.SectionImage;
 
 import java.util.Collections;
@@ -54,21 +54,32 @@ public class GalleryAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.activity_demo_list_row, null);
-        }
         SectionImage sectionImage = (SectionImage)this.getItem(position);
 
-        ImageView i = new ImageView(this.context);
+        if (convertView == null) {
+            convertView = new ImageView(this.context);
+        }
+        ImageView imageView = (ImageView) convertView;
+        /*
+        ImageView i =
 
-        i.setImageResource(R.drawable.logo);
-        i.setLayoutParams(new Gallery.LayoutParams(200, 200));
 
-        i.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         new DownloadImageTask(context,i).execute(sectionImage.getSrc());
 
         return i;
+        */
+
+        imageView.setImageResource(R.drawable.logo);
+        imageView.setLayoutParams(new Gallery.LayoutParams(200, 200));
+
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+
+
+        ImageLoader.getInstance().displayImage(sectionImage.getSrc(), imageView);
+
+        return convertView;
     }
 
     /*
