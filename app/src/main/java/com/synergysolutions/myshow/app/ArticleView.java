@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.startapp.android.publish.StartAppAd;
 import com.synergysolutions.myshow.app.Entity.Article;
 import com.synergysolutions.myshow.app.Entity.LinkedArticle;
@@ -154,6 +155,33 @@ public class ArticleView extends ActionBarActivity {
 
         }
 
+
+        if (section.getSectionImages().size() > 0) {
+
+            LinearLayout linearLayout = new LinearLayout(this);
+
+            int max = section.getSectionImages().size() > 4 ? 4 : section.getSectionImages().size();
+
+            for (int i = 0; i < max; i++){
+
+                SectionImage sectionImage = section.getSectionImages().get(i);
+
+                ImageView imageView = new ImageView(this);
+
+                imageView.setImageResource(R.drawable.logo);
+                imageView.setLayoutParams(new Gallery.LayoutParams(200, 200));
+
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+                ImageLoader.getInstance().displayImage(sectionImage.getSrc(), imageView);
+
+            }
+
+        }
+
+
+
+
         /*
         for(SectionImage sectionImage : section.getSectionImages()){
             this.drawSectionImage(myLayout, sectionImage);
@@ -216,6 +244,8 @@ public class ArticleView extends ActionBarActivity {
         */
 
         if (section.getSectionImages().size() > 0) {
+
+            /*
             Gallery gallery = new Gallery(this);
 
             GalleryAdapter galleryAdapter = new GalleryAdapter(this, section.getSectionImages());
@@ -238,6 +268,10 @@ public class ArticleView extends ActionBarActivity {
             });
 
             myLayout.addView(gallery);
+
+           */
+
+
         }
     }
 
