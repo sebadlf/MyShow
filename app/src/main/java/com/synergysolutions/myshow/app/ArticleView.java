@@ -1,6 +1,8 @@
 package com.synergysolutions.myshow.app;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -17,10 +19,14 @@ import android.widget.AdapterView;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.process.BitmapProcessor;
 import com.startapp.android.publish.StartAppAd;
 import com.synergysolutions.myshow.app.Entity.Article;
 import com.synergysolutions.myshow.app.Entity.LinkedArticle;
@@ -158,7 +164,37 @@ public class ArticleView extends ActionBarActivity {
 
         if (section.getSectionImages().size() > 0) {
 
-            LinearLayout linearLayout = new LinearLayout(this);
+            TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
+            TableRow.LayoutParams rowParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+
+            TableLayout tableLayout = new TableLayout(this);
+            tableLayout.setLayoutParams(tableParams);
+
+            myLayout.addView(tableLayout);
+
+            TableRow tableRow = new TableRow(this);
+            tableRow.setLayoutParams(tableParams);
+
+            tableLayout.addView(tableRow);
+
+
+
+            DisplayImageOptions displayImageOptions = new DisplayImageOptions
+                    .Builder()
+                    .cacheOnDisk(true)
+                    .cacheInMemory(true)
+                    .preProcessor(new BitmapProcessor() {
+                        @Override
+                        public Bitmap process(Bitmap bitmap) {
+
+                            if (bitmap.getHeight() > bitmap.getWidth()){
+
+                            }
+
+                            return Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+                        }
+                    })
+                    .build();
 
             int max = section.getSectionImages().size() > 4 ? 4 : section.getSectionImages().size();
 
@@ -169,11 +205,16 @@ public class ArticleView extends ActionBarActivity {
                 ImageView imageView = new ImageView(this);
 
                 imageView.setImageResource(R.drawable.logo);
-                imageView.setLayoutParams(new Gallery.LayoutParams(200, 200));
 
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-                ImageLoader.getInstance().displayImage(sectionImage.getSrc(), imageView);
+                ImageLoader.getInstance().displayImage(sectionImage.getSrc(), imageView, displayImageOptions);
+
+                imageView.setLayoutParams(rowParams);
+
+                tableRow.addView(imageView);
+
+
 
             }
 
@@ -353,7 +394,7 @@ public class ArticleView extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.article_view, menu);
         return true;
