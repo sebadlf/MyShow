@@ -177,8 +177,6 @@ public class ArticleView extends ActionBarActivity {
 
             tableLayout.addView(tableRow);
 
-
-
             DisplayImageOptions displayImageOptions = new DisplayImageOptions
                     .Builder()
                     .cacheOnDisk(true)
@@ -187,11 +185,21 @@ public class ArticleView extends ActionBarActivity {
                         @Override
                         public Bitmap process(Bitmap bitmap) {
 
-                            if (bitmap.getHeight() > bitmap.getWidth()){
+                        Bitmap result = null;
 
-                            }
+                        if (bitmap.getHeight() > bitmap.getWidth()){
+                            int width = bitmap.getWidth();
+                            int x = (int) ((bitmap.getHeight() - width) * 0.3);
 
-                            return Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+                            result = Bitmap.createBitmap(bitmap, x, 0, width, width);
+                        } else {
+                            int height = bitmap.getHeight();
+                            int y = (int) ((bitmap.getWidth() - height) * 0.5);
+
+                            result = Bitmap.createBitmap(bitmap, 0, y, height, height);
+                        }
+
+                        return result;
                         }
                     })
                     .build();
@@ -206,7 +214,7 @@ public class ArticleView extends ActionBarActivity {
 
                 imageView.setImageResource(R.drawable.logo);
 
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageView.setScaleType(ImageView.ScaleType.FIT_START);
 
                 ImageLoader.getInstance().displayImage(sectionImage.getSrc(), imageView, displayImageOptions);
 
