@@ -13,18 +13,18 @@ android {
 
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
 
     productFlavors {
         production {
-            packageName "be.tamere.gradlebuildtypesexample"
+            applicationId "be.tamere.gradlebuildtypesexample"
         }
 
         staging {
-            packageName "be.tamere.gradlebuildtypesexample.staging"
+            applicationId "be.tamere.gradlebuildtypesexample.staging"
         }
     }
 }
