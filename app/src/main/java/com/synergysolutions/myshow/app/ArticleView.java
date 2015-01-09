@@ -1,6 +1,7 @@
 package com.synergysolutions.myshow.app;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -165,10 +166,11 @@ public class ArticleView extends ActionBarActivity {
         if (section.getSectionImages().size() > 0) {
 
             TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
-            TableRow.LayoutParams rowParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+            TableRow.LayoutParams rowParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT, 1f);
 
             TableLayout tableLayout = new TableLayout(this);
-            tableLayout.setLayoutParams(tableParams);
+
+            //tableLayout.setLayoutParams(tableParams);
 
             myLayout.addView(tableLayout);
 
@@ -176,6 +178,12 @@ public class ArticleView extends ActionBarActivity {
             tableRow.setLayoutParams(tableParams);
 
             tableLayout.addView(tableRow);
+
+            final float densityDpi = getResources().getDisplayMetrics().densityDpi;
+            final int widthPixels = getResources().getDisplayMetrics().widthPixels;
+            final int heightPixels = getResources().getDisplayMetrics().heightPixels;
+            final int maxPixels = widthPixels > heightPixels ? widthPixels : heightPixels;
+            final float maxSize = maxPixels / densityDpi;
 
             DisplayImageOptions displayImageOptions = new DisplayImageOptions
                     .Builder()
@@ -191,22 +199,26 @@ public class ArticleView extends ActionBarActivity {
                             int width = bitmap.getWidth();
                             int x = (int) ((bitmap.getHeight() - width) * 0.3);
 
-                            result = Bitmap.createBitmap(bitmap, x, 0, width, width);
+                            result = Bitmap.createBitmap(bitmap, 0, 0, width, width);
                         } else {
                             int height = bitmap.getHeight();
                             int y = (int) ((bitmap.getWidth() - height) * 0.5);
 
-                            result = Bitmap.createBitmap(bitmap, 0, y, height, height);
+                            result = Bitmap.createBitmap(bitmap, y, 0, height, height);
                         }
 
-                        return result;
+                        return Bitmap.createScaledBitmap(result, (int)densityDpi, (int)densityDpi, true);
                         }
                     })
                     .build();
 
-            int max = section.getSectionImages().size() > 4 ? 4 : section.getSectionImages().size();
+            //double factor =  1 + maxSize * (20 / 3);
 
-            for (int i = 0; i < max; i++){
+            int max = (int) (getResources().getDisplayMetrics().widthPixels / densityDpi * 1.5) ;
+
+            int cant = section.getSectionImages().size() > max ? max : section.getSectionImages().size();
+
+            for (int i = 0; i < cant; i++){
 
                 SectionImage sectionImage = section.getSectionImages().get(i);
 
@@ -214,7 +226,7 @@ public class ArticleView extends ActionBarActivity {
 
                 imageView.setImageResource(R.drawable.logo);
 
-                imageView.setScaleType(ImageView.ScaleType.FIT_START);
+                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
                 ImageLoader.getInstance().displayImage(sectionImage.getSrc(), imageView, displayImageOptions);
 
@@ -222,6 +234,17 @@ public class ArticleView extends ActionBarActivity {
 
                 tableRow.addView(imageView);
 
+
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent().setClass(ArticleView.this, GalleryActivity.class);
+
+                        intent.putExtra("articleId", article.getId());
+
+                        startActivity(intent);
+                    }
+                });
 
 
             }

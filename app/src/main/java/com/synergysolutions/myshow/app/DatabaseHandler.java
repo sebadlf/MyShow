@@ -396,7 +396,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return count;
     }
 
-    Article getArticle(int id) {
+    Article getArticle(long id) {
 
         String field = ARTICLE_ID;
 
