@@ -43,14 +43,14 @@ public class ArticlesJsonAsyncTask extends AsyncTask<String, Integer, List<Artic
                 JSONObject articleJson = (JSONObject) articlesJson.get(articleId);
 
                 Article article = new Article();
-                article.setWikiaId(articleJson.getInt("wikiaId"));
+                article.setWikiaId(articleJson.getInt("id"));
                 article.setTitle(articleJson.getString("title"));
                 article.setUrl(articleJson.getString("url"));
-                article.setArticleType(articleJson.getString("articleType"));
-                article.setTeaser(articleJson.getString("teaser"));
+                article.setArticleType(articleJson.getString("type"));
+                article.setTeaser(articleJson.getString("abstract"));
                 article.setThumbnail(articleJson.getString("thumbnail"));
 
-                JSONArray aliasesJson = articleJson.getJSONArray("aliases");
+                JSONArray aliasesJson = articleJson.getJSONArray("alias");
 
                 for (int aliasId = 0; aliasId < aliasesJson.length(); aliasId++) {
 
