@@ -54,11 +54,11 @@ public class ArticlesJsonAsyncTask extends AsyncTask<String, Integer, List<Artic
 
                 for (int aliasId = 0; aliasId < aliasesJson.length(); aliasId++) {
 
-                    JSONObject sectionJson = (JSONObject) aliasesJson.get(aliasId);
+                    String aliasTitle = aliasesJson.getString(aliasId);
 
                     Alias alias = new Alias();
                     alias.setArticle(article);
-                    alias.setTitle(sectionJson.getString("title"));
+                    alias.setTitle(aliasTitle);
 
                     article.getAliases().add(alias);
                 }
@@ -85,7 +85,12 @@ public class ArticlesJsonAsyncTask extends AsyncTask<String, Integer, List<Artic
                         SectionContent sectionContent = new SectionContent();
                         sectionContent.setSection(section);
                         sectionContent.setType(sectionContentJson.getString("type"));
-                        sectionContent.setText(sectionContentJson.getString("text"));
+
+                        if (sectionContentJson.has("text")){
+                            sectionContent.setText(sectionContentJson.getString("text"));
+                        } else {
+                            sectionContent.setText("");
+                        }
 
                         section.getSectionContents().add(sectionContent);
 
@@ -144,7 +149,11 @@ public class ArticlesJsonAsyncTask extends AsyncTask<String, Integer, List<Artic
                         SectionImage sectionImage = new SectionImage();
                         sectionImage.setSection(section);
                         sectionImage.setSrc(sectionImageJson.getString("src"));
-                        sectionImage.setCaption(sectionImageJson.getString("caption"));
+
+                        if (sectionImageJson.has("caption")){
+                            sectionImage.setCaption(sectionImageJson.getString("caption"));
+                        }
+
 
                         section.getSectionImages().add(sectionImage);
                     }
@@ -157,6 +166,7 @@ public class ArticlesJsonAsyncTask extends AsyncTask<String, Integer, List<Artic
         } catch (JSONException e) {
 
             e.printStackTrace();
+            result = new ArrayList<Article>();
 
         }
 

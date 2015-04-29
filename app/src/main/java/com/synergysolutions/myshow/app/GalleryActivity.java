@@ -105,7 +105,7 @@ public class GalleryActivity extends Activity implements AbsListView.OnScrollLis
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         //Toast.makeText(this, "Item Clicked: " + position, Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(GalleryActivity.this, FullScreenViewActivity.class);
-        startActivity(intent);
+        //Intent intent = new Intent(GalleryActivity.this, FullScreenViewActivity.class);
+        //startActivity(intent);
     }
 }
