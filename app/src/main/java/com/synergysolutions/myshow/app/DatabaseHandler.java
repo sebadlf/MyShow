@@ -435,6 +435,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                             + " JOIN " + TABLE_ALIAS
                             + " ON " + TABLE_ARTICLE + "." + ARTICLE_ID + " = " + TABLE_ALIAS + "." + ALIAS_ARTICLE_ID
                             + " WHERE " + TABLE_ALIAS + "." + ALIAS_TITLE + " = " + "'" + title + "'";
+
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         Article article = null;
@@ -463,149 +464,153 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         article.setThumbnail(cursor.getString(cursor.getColumnIndex(ARTICLE_THUMBNAIL)));
         article.setOriginalDimensions(cursor.getString(cursor.getColumnIndex(ARTICLE_ORIGINAL_DIMENSIONS)));
 
-        //Sections
-        String selectQuery = "SELECT  * FROM " + TABLE_SECTION + " WHERE " + SECTION_ARTICLE_ID + " = " + article.getId();
-        cursor = db.rawQuery(selectQuery, null);
+        if (getSections == true) {
 
-        HashMap<Long, Section> sectionHashMap = new HashMap<Long, Section>();
-
-        if (cursor.moveToFirst()) {
-            do {
-                Section section = new Section();
-
-                article.getSections().add(section);
-                section.setArticle(article);
-
-                section.setId(cursor.getInt(cursor.getColumnIndex(SECTION_ID)));
-                section.setTitle(cursor.getString(cursor.getColumnIndex(SECTION_TITLE)));
-                section.setLevel(cursor.getInt(cursor.getColumnIndex(SECTION_LEVEL)));
-
-                sectionHashMap.put(section.getId(), section);
-
-            } while (cursor.moveToNext());
-        }
-
-        if (sectionHashMap.isEmpty() == false){
-
-            String ids = TextUtils.join(",", sectionHashMap.keySet());
-
-            //Section Images
-            selectQuery = "SELECT  * FROM " + TABLE_SECTION_IMAGE + " WHERE " + SECTION_IMAGE_SECTION_ID + " IN (" + ids + ")";
+            //Sections
+            String selectQuery = "SELECT  * FROM " + TABLE_SECTION + " WHERE " + SECTION_ARTICLE_ID + " = " + article.getId();
             cursor = db.rawQuery(selectQuery, null);
+
+            HashMap<Long, Section> sectionHashMap = new HashMap<Long, Section>();
 
             if (cursor.moveToFirst()) {
                 do {
-                    SectionImage sectionImage = new SectionImage();
+                    Section section = new Section();
 
-                    Long sectionId = cursor.getLong(cursor.getColumnIndex(SECTION_IMAGE_SECTION_ID));
-                    Section section = sectionHashMap.get(sectionId);
+                    article.getSections().add(section);
+                    section.setArticle(article);
 
-                    section.getSectionImages().add(sectionImage);
-                    sectionImage.setSection(section);
+                    section.setId(cursor.getInt(cursor.getColumnIndex(SECTION_ID)));
+                    section.setTitle(cursor.getString(cursor.getColumnIndex(SECTION_TITLE)));
+                    section.setLevel(cursor.getInt(cursor.getColumnIndex(SECTION_LEVEL)));
 
-                    sectionImage.setId(cursor.getInt(cursor.getColumnIndex(SECTION_IMAGE_ID)));
-                    sectionImage.setSrc(cursor.getString(cursor.getColumnIndex(SECTION_IMAGE_SRC)));
-                    sectionImage.setCaption(cursor.getString(cursor.getColumnIndex(SECTION_IMAGE_CAPTION)));
+                    sectionHashMap.put(section.getId(), section);
 
                 } while (cursor.moveToNext());
             }
 
-            //Section Content
+            if (sectionHashMap.isEmpty() == false) {
 
-            selectQuery = "SELECT  * FROM " + TABLE_SECTION_CONTENT + " WHERE " + SECTION_CONTENT_SECTION_ID + " IN (" + ids + ")";
-            cursor = db.rawQuery(selectQuery, null);
+                String ids = TextUtils.join(",", sectionHashMap.keySet());
 
-            HashMap<Long, SectionContent> sectionContentHashMap = new HashMap<Long, SectionContent>();
-
-            if (cursor.moveToFirst()) {
-                do {
-                    SectionContent sectionContent = new SectionContent();
-
-                    Long sectionId = cursor.getLong(cursor.getColumnIndex(SECTION_CONTENT_SECTION_ID));
-                    Section section = sectionHashMap.get(sectionId);
-
-                    section.getSectionContents().add(sectionContent);
-                    sectionContent.setSection(section);
-
-                    sectionContent.setId(cursor.getInt(cursor.getColumnIndex(SECTION_CONTENT_ID)));
-                    sectionContent.setType(cursor.getString(cursor.getColumnIndex(SECTION_CONTENT_TYPE)));
-                    sectionContent.setText(cursor.getString(cursor.getColumnIndex(SECTION_CONTENT_TEXT)));
-
-                    sectionContentHashMap.put(sectionContent.getId(), sectionContent);
-
-                } while (cursor.moveToNext());
-            }
-
-            if (sectionContentHashMap.isEmpty() == false){
-
-                ids = TextUtils.join(",", sectionContentHashMap.keySet());
-
-                //SectionContents
-                selectQuery = "SELECT  * FROM " + TABLE_LIST_ELEMENT + " WHERE " + LIST_ELEMENT_SECTION_CONTENT_ID + " IN (" + ids + ")";
-                cursor = db.rawQuery(selectQuery, null);
-
-                HashMap<Long, ListElement> listElementHashMap = new HashMap<Long, ListElement>();
-
-                if (cursor.moveToFirst()) {
-                    do {
-                        ListElement listElement = new ListElement();
-
-                        Long sectionContentId = cursor.getLong(cursor.getColumnIndex(LIST_ELEMENT_SECTION_CONTENT_ID));
-                        SectionContent sectionContent = sectionContentHashMap.get(sectionContentId);
-
-                        sectionContent.getListElements().add(listElement);
-                        listElement.setSectionContent(sectionContent);
-
-                        listElement.setId(cursor.getInt(cursor.getColumnIndex(LIST_ELEMENT_ID)));
-                        listElement.setText(cursor.getString(cursor.getColumnIndex(LIST_ELEMENT_TEXT)));
-
-                        listElementHashMap.put(listElement.getId(), listElement);
-
-                    } while (cursor.moveToNext());
-                }
-
-                if (listElementHashMap.isEmpty()){
-                    listElementHashMap.put(-1L, null);
-                }
-
-                String listElementIds = TextUtils.join(",", listElementHashMap.keySet());
-
-
-                //LinkedArticles
-                selectQuery = "SELECT  * FROM " + TABLE_LINKED_ARTICLE
-                                + " WHERE (" + LINKED_ARTICLE_SECTION_CONTENT_ID + " IN (" + ids + ")"
-                                + " OR " + LINKED_ARTICLE_LIST_ELEMENT_ID + " IN (" + listElementIds + "))"
-                                + " AND " + LINKED_ARTICLE_ALIAS + " IN (SELECT " + ALIAS_TITLE  + " FROM " + TABLE_ALIAS + ")";
+                //Section Images
+                selectQuery = "SELECT  * FROM " + TABLE_SECTION_IMAGE + " WHERE " + SECTION_IMAGE_SECTION_ID + " IN (" + ids + ")";
                 cursor = db.rawQuery(selectQuery, null);
 
                 if (cursor.moveToFirst()) {
                     do {
-                        LinkedArticle linkedArticle = new LinkedArticle();
+                        SectionImage sectionImage = new SectionImage();
 
-                        linkedArticle.setId(cursor.getInt(cursor.getColumnIndex(LINKED_ARTICLE_ID)));
+                        Long sectionId = cursor.getLong(cursor.getColumnIndex(SECTION_IMAGE_SECTION_ID));
+                        Section section = sectionHashMap.get(sectionId);
 
-                        Long sectionConentId = cursor.getLong(cursor.getColumnIndex(LINKED_ARTICLE_SECTION_CONTENT_ID));
-                        Long listElementId = cursor.getLong(cursor.getColumnIndex(LINKED_ARTICLE_LIST_ELEMENT_ID));
+                        section.getSectionImages().add(sectionImage);
+                        sectionImage.setSection(section);
 
-                        if (sectionConentId != 0L){
-                            SectionContent sectionContent = sectionContentHashMap.get(sectionConentId);
-
-                            sectionContent.getLinkedArticles().add(linkedArticle);
-                            linkedArticle.setSectionContent(sectionContent);
-
-                        } else if (listElementId != 0L) {
-
-                            ListElement listElement = listElementHashMap.get(listElementId);
-
-                            listElement.getLinkedArticles().add(linkedArticle);
-                            linkedArticle.setListElement(listElement);
-
-                        }
-
-                        linkedArticle.setAlias(cursor.getString(cursor.getColumnIndex(LINKED_ARTICLE_ALIAS)));
-
+                        sectionImage.setId(cursor.getInt(cursor.getColumnIndex(SECTION_IMAGE_ID)));
+                        sectionImage.setSrc(cursor.getString(cursor.getColumnIndex(SECTION_IMAGE_SRC)));
+                        sectionImage.setCaption(cursor.getString(cursor.getColumnIndex(SECTION_IMAGE_CAPTION)));
 
                     } while (cursor.moveToNext());
+                }
+
+                //Section Content
+
+                selectQuery = "SELECT  * FROM " + TABLE_SECTION_CONTENT + " WHERE " + SECTION_CONTENT_SECTION_ID + " IN (" + ids + ")";
+                cursor = db.rawQuery(selectQuery, null);
+
+                HashMap<Long, SectionContent> sectionContentHashMap = new HashMap<Long, SectionContent>();
+
+                if (cursor.moveToFirst()) {
+                    do {
+                        SectionContent sectionContent = new SectionContent();
+
+                        Long sectionId = cursor.getLong(cursor.getColumnIndex(SECTION_CONTENT_SECTION_ID));
+                        Section section = sectionHashMap.get(sectionId);
+
+                        section.getSectionContents().add(sectionContent);
+                        sectionContent.setSection(section);
+
+                        sectionContent.setId(cursor.getInt(cursor.getColumnIndex(SECTION_CONTENT_ID)));
+                        sectionContent.setType(cursor.getString(cursor.getColumnIndex(SECTION_CONTENT_TYPE)));
+                        sectionContent.setText(cursor.getString(cursor.getColumnIndex(SECTION_CONTENT_TEXT)));
+
+                        sectionContentHashMap.put(sectionContent.getId(), sectionContent);
+
+                    } while (cursor.moveToNext());
+                }
+
+                if (sectionContentHashMap.isEmpty() == false) {
+
+                    ids = TextUtils.join(",", sectionContentHashMap.keySet());
+
+                    //SectionContents
+                    selectQuery = "SELECT  * FROM " + TABLE_LIST_ELEMENT + " WHERE " + LIST_ELEMENT_SECTION_CONTENT_ID + " IN (" + ids + ")";
+                    cursor = db.rawQuery(selectQuery, null);
+
+                    HashMap<Long, ListElement> listElementHashMap = new HashMap<Long, ListElement>();
+
+                    if (cursor.moveToFirst()) {
+                        do {
+                            ListElement listElement = new ListElement();
+
+                            Long sectionContentId = cursor.getLong(cursor.getColumnIndex(LIST_ELEMENT_SECTION_CONTENT_ID));
+                            SectionContent sectionContent = sectionContentHashMap.get(sectionContentId);
+
+                            sectionContent.getListElements().add(listElement);
+                            listElement.setSectionContent(sectionContent);
+
+                            listElement.setId(cursor.getInt(cursor.getColumnIndex(LIST_ELEMENT_ID)));
+                            listElement.setText(cursor.getString(cursor.getColumnIndex(LIST_ELEMENT_TEXT)));
+
+                            listElementHashMap.put(listElement.getId(), listElement);
+
+                        } while (cursor.moveToNext());
+                    }
+
+                    if (listElementHashMap.isEmpty()) {
+                        listElementHashMap.put(-1L, null);
+                    }
+
+                    String listElementIds = TextUtils.join(",", listElementHashMap.keySet());
+
+
+                    //LinkedArticles
+                    selectQuery = "SELECT  * FROM " + TABLE_LINKED_ARTICLE
+                            + " WHERE (" + LINKED_ARTICLE_SECTION_CONTENT_ID + " IN (" + ids + ")"
+                            + " OR " + LINKED_ARTICLE_LIST_ELEMENT_ID + " IN (" + listElementIds + "))"
+                            + " AND " + LINKED_ARTICLE_ALIAS + " IN (SELECT " + ALIAS_TITLE + " FROM " + TABLE_ALIAS + ")";
+                    cursor = db.rawQuery(selectQuery, null);
+
+                    if (cursor.moveToFirst()) {
+                        do {
+                            LinkedArticle linkedArticle = new LinkedArticle();
+
+                            linkedArticle.setId(cursor.getInt(cursor.getColumnIndex(LINKED_ARTICLE_ID)));
+
+                            Long sectionConentId = cursor.getLong(cursor.getColumnIndex(LINKED_ARTICLE_SECTION_CONTENT_ID));
+                            Long listElementId = cursor.getLong(cursor.getColumnIndex(LINKED_ARTICLE_LIST_ELEMENT_ID));
+
+                            if (sectionConentId != 0L) {
+                                SectionContent sectionContent = sectionContentHashMap.get(sectionConentId);
+
+                                sectionContent.getLinkedArticles().add(linkedArticle);
+                                linkedArticle.setSectionContent(sectionContent);
+
+                            } else if (listElementId != 0L) {
+
+                                ListElement listElement = listElementHashMap.get(listElementId);
+
+                                listElement.getLinkedArticles().add(linkedArticle);
+                                linkedArticle.setListElement(listElement);
+
+                            }
+
+                            linkedArticle.setAlias(cursor.getString(cursor.getColumnIndex(LINKED_ARTICLE_ALIAS)));
+
+
+                        } while (cursor.moveToNext());
+                    }
+
                 }
 
             }

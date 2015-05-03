@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">MyShow</string>
+    <string name="app_name">Agents of S.H.I.E.L.D. Guide</string>
     <string name="hello_world">Hola Mundo!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_demo_list">DemoList</string>
     <string name="title_activity_article_view">ArticleView</string>
-    <string name="title_activity_sections">SectionsActivity</string>
-    <string name="title_activity_splash">SplashActivity</string>
+    <string name="title_activity_sections">Sections Activity</string>
+    <string name="title_activity_splash">Agents of S.H.I.E.L.D. Guide</string>
     <string name="title_activity_image_view">ImageViewActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    
+    <string name="startapp_accountid">104220702</string>
+    <string name="startapp_appid">204133814</string>
 
 </resources>

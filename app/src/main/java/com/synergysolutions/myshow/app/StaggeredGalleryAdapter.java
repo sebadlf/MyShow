@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -12,7 +13,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.etsy.android.grid.util.DynamicHeightImageView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.process.BitmapProcessor;
 import com.synergysolutions.myshow.app.Entity.SectionImage;
 
 public class StaggeredGalleryAdapter extends ArrayAdapter<SectionImage> {
@@ -53,7 +56,46 @@ public class StaggeredGalleryAdapter extends ArrayAdapter<SectionImage> {
 
         vh.imgView.setHeightRatio(positionHeight);
 
-        ImageLoader.getInstance().displayImage(getItem(position).getSrc(), vh.imgView);
+        /////////////////////////////////////////////////
+
+        final float densityDpi =  getContext().getResources().getDisplayMetrics().densityDpi;
+        final int widthPixels = getContext().getResources().getDisplayMetrics().widthPixels;
+        final int heightPixels = getContext().getResources().getDisplayMetrics().heightPixels;
+        final int maxPixels = widthPixels > heightPixels ? widthPixels : heightPixels;
+        final float maxSize = maxPixels / densityDpi;
+
+        DisplayImageOptions displayImageOptions = new DisplayImageOptions
+                .Builder()
+                .cacheOnDisk(true)
+                .cacheInMemory(true)
+                .preProcessor(new BitmapProcessor() {
+                    @Override
+                    public Bitmap process(Bitmap bitmap) {
+
+                        Bitmap result = null;
+
+                        if (bitmap.getHeight() > bitmap.getWidth()){
+                            int width = bitmap.getWidth();
+                            int x = (int) ((bitmap.getHeight() - width) * 0.3);
+
+                            result = Bitmap.createBitmap(bitmap, 0, 0, width, width);
+                        } else {
+                            int height = bitmap.getHeight();
+                            int y = (int) ((bitmap.getWidth() - height) * 0.5);
+
+                            result = Bitmap.createBitmap(bitmap, y, 0, height, height);
+                        }
+
+                        return Bitmap.createScaledBitmap(result, (int)densityDpi, (int)densityDpi, true);
+                    }
+                })
+                .build();
+
+        //////////////////////////////////////////////
+
+
+        ImageLoader.getInstance().displayImage(getItem(position).getSrc(), vh.imgView, displayImageOptions);
+
         return convertView;
     }
 

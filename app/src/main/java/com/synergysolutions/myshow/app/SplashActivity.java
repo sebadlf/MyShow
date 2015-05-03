@@ -34,7 +34,7 @@ public class SplashActivity extends Activity implements IArticlesJsonResultProce
         setContentView(R.layout.activity_splash);
 
         if (new DatabaseHandler(this).getArticlesCount() > 0) {
-            Intent mainIntent = new Intent().setClass(SplashActivity.this, MainActivity.class);
+            Intent mainIntent = new Intent().setClass(SplashActivity.this, SectionsActivity.class);
             startActivity(mainIntent);
             finish();//Destruimos esta activity para prevenit que el usuario retorne aqui presionando el boton Atras.
         } else {
@@ -81,7 +81,7 @@ public class SplashActivity extends Activity implements IArticlesJsonResultProce
 
         Log.println(Log.DEBUG, SplashActivity.class.getName(), "Tiempo = " + diff);
 
-        Intent mainIntent = new Intent().setClass(SplashActivity.this, MainActivity.class);
+        Intent mainIntent = new Intent().setClass(SplashActivity.this, SectionsActivity.class);
         startActivity(mainIntent);
         finish();//Destruimos esta activity para prevenit que el usuario retorne aqui presionando el boton Atras.
     }

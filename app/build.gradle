@@ -20,11 +20,11 @@ android {
 
     productFlavors {
         production {
-            applicationId "be.tamere.gradlebuildtypesexample"
+            applicationId "com.risingstarsapps.demo"
         }
 
-        staging {
-            applicationId "be.tamere.gradlebuildtypesexample.staging"
+        agentsOfShield {
+            applicationId "com.risingstarsapps.agentsofshield"
         }
     }
 }

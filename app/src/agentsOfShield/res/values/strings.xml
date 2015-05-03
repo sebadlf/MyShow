@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Agents of S.H.I.E.L.D. Guide</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_demo_list">DemoList</string>
+    <string name="title_activity_article_view">Article</string>
+    <string name="title_activity_sections">Agents of S.H.I.E.L.D. Guide</string>
+    <string name="title_activity_splash">Agents of S.H.I.E.L.D. Guide</string>
+    <string name="title_activity_image_view">ImageViewActivity</string>
+
+    <string name="startapp_accountid">104473982</string>
+    <string name="startapp_appid">204987236</string>
+
+    <string name="app_schema">com.risingstarsapps.agentsofshield</string>
+</resources>

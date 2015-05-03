@@ -51,7 +51,10 @@ public class ArticleView extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        StartAppAd.init(this, "104220702", "204133814");
+        String startappAccountId = getResources().getString(R.string.startapp_accountid);
+        String startappAppId = getResources().getString(R.string.startapp_appid);
+
+        StartAppAd.init(this, startappAccountId, startappAppId);
 
         setContentView(R.layout.activity_article_view);
 
@@ -75,7 +78,7 @@ public class ArticleView extends ActionBarActivity {
 
                 String url = data.toString();
 
-                title = url.replace("com.synergysolutions.myshow.article://", "");
+                title = url.replace(getResources().getString(R.string.app_schema) + "://", "");
 
                 article = db.getArticle(title, true);
             }
@@ -96,9 +99,9 @@ public class ArticleView extends ActionBarActivity {
             new DownloadImageTask(this, null).execute(url);
         }
 
-        TextView textView = new TextView(this);
-        textView.setText(String.valueOf(article.getWikiaId()));
-        myLayout.addView(textView);
+//        TextView textView = new TextView(this);
+//        textView.setText(String.valueOf(article.getWikiaId()));
+//        myLayout.addView(textView);
 
         for(Section section : article.getSections()){
             this.drawSection(myLayout, section);
@@ -131,7 +134,7 @@ public class ArticleView extends ActionBarActivity {
 
         TextView textView = new TextView(this);
 
-        textView.setText(section.getTitle() + " (" + section.getLevel() + ")");
+        textView.setText(section.getTitle());// + " (" + section.getLevel() + ")");
 
         textView.setTypeface(null, Typeface.BOLD);
 
@@ -152,7 +155,9 @@ public class ArticleView extends ActionBarActivity {
             textView.setPadding(0,5,0,5);
         }
 
-        myLayout.addView(textView);
+        if (section.getLevel() > 1){
+            myLayout.addView(textView);
+        }
 
         //this.linkifyTextView(textView);
 
@@ -414,7 +419,7 @@ public class ArticleView extends ActionBarActivity {
             //Pattern userMatcher = Pattern.compile("\\B@[^:\\s]+");
             Pattern userMatcher = Pattern.compile(linkedArticle.getAlias());
 
-            String userViewURL = "com.synergysolutions.myshow.article://";
+            String userViewURL = getResources().getString(R.string.app_schema) + "://";
 
             Linkify.addLinks(textView, userMatcher, userViewURL);
 
@@ -427,7 +432,7 @@ public class ArticleView extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.article_view, menu);
+        //getMenuInflater().inflate(R.menu.article_view, menu);
         return true;
     }
 

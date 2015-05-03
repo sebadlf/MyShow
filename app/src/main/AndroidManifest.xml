@@ -24,7 +24,7 @@
 
                 <action android:name="android.intent.action.VIEW" />
 
-                <data android:scheme="com.synergysolutions.myshow.article" />
+                <data android:scheme="@string/app_schema" />
             </intent-filter>
         </activity>
         <activity
@@ -46,7 +46,6 @@
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
