@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -160,6 +161,9 @@ public class SectionsActivity extends Activity {
             imgThombnail.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
             TextView txtNombre = (TextView) rowView.findViewById(R.id.nombre);
+
+            txtNombre.setMaxLines(1);
+            txtNombre.setEllipsize(TextUtils.TruncateAt.END);
             txtNombre.setText(article.getTitle()); // + " " + String.valueOf(article.getWikiaId()));
 
             TextView txtAlias = (TextView) rowView.findViewById(R.id.alias);

@@ -429,6 +429,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     Article getArticle(String title, boolean getSections) {
 
+        title = title.replace("'", "''");
+
         SQLiteDatabase db = this.getReadableDatabase();
 
         String selectQuery = "SELECT " + TABLE_ARTICLE + ".* FROM " + TABLE_ARTICLE
