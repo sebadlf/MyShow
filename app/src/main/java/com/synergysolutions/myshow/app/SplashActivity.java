@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.synergysolutions.myshow.app.Entity.Article;
+import com.synergysolutions.myshow.app.helper.Utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,32 +39,8 @@ public class SplashActivity extends Activity implements IArticlesJsonResultProce
             startActivity(mainIntent);
             finish();//Destruimos esta activity para prevenit que el usuario retorne aqui presionando el boton Atras.
         } else {
-            new ArticlesJsonAsyncTask(this).execute(this.readTextFile(this, R.raw.articles));
+            new ArticlesJsonAsyncTask(this).execute(Utils.readTextFile(this, R.raw.articles));
         }
-
-    }
-
-    private String readTextFile(Context ctx, int resId)
-    {
-        InputStream inputStream = ctx.getResources().openRawResource(resId);
-
-        InputStreamReader inputreader = new InputStreamReader(inputStream);
-        BufferedReader bufferedreader = new BufferedReader(inputreader);
-        String line;
-        StringBuilder stringBuilder = new StringBuilder();
-        try
-        {
-            while (( line = bufferedreader.readLine()) != null)
-            {
-                stringBuilder.append(line);
-                stringBuilder.append('\n');
-            }
-        }
-        catch (IOException e)
-        {
-            return null;
-        }
-        return stringBuilder.toString();
     }
 
     @Override
