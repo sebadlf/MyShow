@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -36,6 +37,9 @@ import com.synergysolutions.myshow.app.Entity.Section;
 import com.synergysolutions.myshow.app.Entity.SectionContent;
 import com.synergysolutions.myshow.app.Entity.SectionImage;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
@@ -46,6 +50,9 @@ public class ArticleView extends ActionBarActivity {
     DatabaseHandler db;
 
     Article article;
+    ArrayList<String> sections = new ArrayList();
+    LinearLayout myLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +62,15 @@ public class ArticleView extends ActionBarActivity {
         String startappAppId = getResources().getString(R.string.startapp_appid);
 
         StartAppAd.init(this, startappAccountId, startappAppId);
+
+        String[] sectionsArray = getResources().getStringArray(R.array.sections);
+        for (int i = 0; i < sectionsArray.length; i++) {
+            StringTokenizer stringTokenizer = new StringTokenizer(sectionsArray[i], "|||");
+
+            String title = stringTokenizer.nextToken();
+
+            sections.add(title);
+        }
 
         setContentView(R.layout.activity_article_view);
 
@@ -86,7 +102,7 @@ public class ArticleView extends ActionBarActivity {
 
         setTitle(article.getTitle().trim());
 
-        LinearLayout myLayout = (LinearLayout) findViewById(R.id.ArticleSections);
+        myLayout = (LinearLayout) findViewById(R.id.ArticleSections);
 
         if ((article.getThumbnail() != null) && (article.getThumbnail().startsWith("http"))) {
 
@@ -107,6 +123,41 @@ public class ArticleView extends ActionBarActivity {
             this.drawSection(myLayout, section);
         }
 
+        //Section[] articleSectionsArray = new Section[article.getSections().size()];
+        //articleSectionsArray = article.getSections().toArray(articleSectionsArray);
+        //new DrawSectionAsync().execute(articleSectionsArray);
+    }
+
+    private class DrawSectionAsync extends AsyncTask<Section, LinearLayout, Long> {
+        protected Long doInBackground(Section... sections) {
+            int count = sections.length;
+
+            for (int i = 0; i < count; i++) {
+                LinearLayout linearLayout = new LinearLayout(ArticleView.this);
+
+                ArticleView.this.drawSection(linearLayout, sections[i]);
+
+                publishProgress(linearLayout);
+                // Escape early if cancel() is called
+                if (isCancelled()) break;
+            }
+            return 0L;
+        }
+
+        protected void onProgressUpdate(LinearLayout... progress) {
+            //setProgressPercent(progress[0]);
+            for (int i = 0; i < progress[0].getChildCount(); i++){
+                View view = progress[0].getChildAt(0);
+
+                progress[0].removeViewAt(0);
+
+                myLayout.addView(view);
+            }
+        }
+
+        protected void onPostExecute(Long result) {
+
+        }
     }
 
     private String stripSlayesOld(String text){
@@ -416,6 +467,7 @@ public class ArticleView extends ActionBarActivity {
     private void linkifyTextView(TextView textView, List<LinkedArticle> linkedArticles){
 
         for(LinkedArticle linkedArticle : linkedArticles){
+
             //Pattern userMatcher = Pattern.compile("\\B@[^:\\s]+");
             Pattern userMatcher = Pattern.compile(linkedArticle.getAlias());
 
@@ -432,7 +484,14 @@ public class ArticleView extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.article_view, menu);
+        getMenuInflater().inflate(R.menu.article_view, menu);
+
+        MenuItem menuItem = menu.add(0, 1, 1, R.string.home_label);
+
+        for (int i = 0; i < sections.size(); i++) {
+            menuItem = menu.add(0, 1, 1, sections.get(i));
+        }
+
         return true;
     }
 
@@ -441,9 +500,18 @@ public class ArticleView extends ActionBarActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
+        } else if(item.getTitle() == getResources().getString(R.string.home_label)) {
+            Intent mainIntent = new Intent().setClass(ArticleView.this, SectionsActivity.class);
+            startActivity(mainIntent);
+        } else if (sections.contains(item.getTitle().toString())){
+            Intent intent = new Intent(ArticleView.this, SectionsActivity.class);
+            intent.putExtra("section", item.getTitle().toString());
+
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

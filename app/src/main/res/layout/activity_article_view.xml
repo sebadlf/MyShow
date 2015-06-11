@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    tools:context="com.synergysolutions.myshow.app.ArticleView">
+    tools:context="${packageName}.${activityClass}">
 
     <com.startapp.android.publish.banner.Banner
         android:id="@+id/startAppBanner"

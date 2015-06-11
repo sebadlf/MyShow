@@ -38,6 +38,8 @@ public class ArticlesJsonAsyncTask extends AsyncTask<String, Integer, List<Artic
         try {
             JSONArray articlesJson = (JSONArray) new JSONTokener(jsonString[0]).nextValue();
 
+            jsonString[0] = "";
+
             for (int articleId = 0; articleId < articlesJson.length(); articleId++) {
 
                 JSONObject articleJson = (JSONObject) articlesJson.get(articleId);

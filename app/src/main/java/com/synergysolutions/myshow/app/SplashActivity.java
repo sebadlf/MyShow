@@ -3,6 +3,8 @@ package com.synergysolutions.myshow.app;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.res.Resources;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +30,7 @@ import java.util.logging.Handler;
 public class SplashActivity extends Activity implements IArticlesJsonResultProcessor {
 
     private long splashDelay = 6000; //6 segundos
+    private int articlesCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +42,33 @@ public class SplashActivity extends Activity implements IArticlesJsonResultProce
             startActivity(mainIntent);
             finish();//Destruimos esta activity para prevenit que el usuario retorne aqui presionando el boton Atras.
         } else {
-            new ArticlesJsonAsyncTask(this).execute(Utils.readTextFile(this, R.raw.articles));
+            int articleId = 1;
+            boolean getOtherResource = true;
+
+            while(getOtherResource){
+                String resourceName = "articles" + articleId;
+
+                int resourceId = getResources().getIdentifier(resourceName, "raw", getPackageName());;
+
+                if (resourceId > 0){
+                    try {
+                        new ArticlesJsonAsyncTask(this).execute(Utils.readTextFile(this, resourceId));
+
+                        articleId++;
+                        articlesCounter++;
+                    } catch (Exception e){
+                        e.printStackTrace();
+                        resourceId = -1;
+                    }
+                }
+
+                getOtherResource = resourceId > 0;
+            }
         }
     }
 
     @Override
     public void OnArticlesJsonResultFinish(List<Article> articleList) {
-
-        Date start = new Date();
 
         final DatabaseHandler db = new DatabaseHandler(this);
 
@@ -54,13 +76,13 @@ public class SplashActivity extends Activity implements IArticlesJsonResultProce
 
         db.close();
 
-        long diff = new Date().getTime() - start.getTime();
+        articlesCounter--;
 
-        Log.println(Log.DEBUG, SplashActivity.class.getName(), "Tiempo = " + diff);
-
-        Intent mainIntent = new Intent().setClass(SplashActivity.this, SectionsActivity.class);
-        startActivity(mainIntent);
-        finish();//Destruimos esta activity para prevenit que el usuario retorne aqui presionando el boton Atras.
+        if (articlesCounter == 0){
+            Intent mainIntent = new Intent().setClass(SplashActivity.this, SectionsActivity.class);
+            startActivity(mainIntent);
+            finish();//Destruimos esta activity para prevenit que el usuario retorne aqui presionando el boton Atras.
+        }
     }
 
 }

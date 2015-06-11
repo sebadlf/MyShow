@@ -13,4 +13,6 @@
     <string name="startapp_appid">204987236</string>
 
     <string name="app_schema">com.risingstarsapps.agentsofshield</string>
+
+    <string name="home_label">Home</string>
 </resources>

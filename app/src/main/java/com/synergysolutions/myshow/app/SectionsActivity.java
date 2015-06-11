@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,6 +18,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.process.BitmapProcessor;
+import com.startapp.android.publish.StartAppAd;
 import com.synergysolutions.myshow.app.Entity.Article;
 
 import java.util.Random;
@@ -66,7 +68,12 @@ public class SectionsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sections);
+
+        String startappAccountId = getResources().getString(R.string.startapp_accountid);
+        String startappAppId = getResources().getString(R.string.startapp_appid);
+
+        StartAppAd.init(this, startappAccountId, startappAppId);
+
 
         Bundle extras = this.getIntent().getExtras();
 
@@ -79,8 +86,12 @@ public class SectionsActivity extends Activity {
         String[] sections;
 
         if ((title != null) && (title.length() > 0)){
+            setContentView(R.layout.activity_sections);
             sections = getStringArrayResourceFromTitle(title);
+
+            setTitle(title);
         } else {
+            setContentView(R.layout.activity_sections_main);
             sections = getResources().getStringArray(R.array.sections);
         }
 
@@ -104,7 +115,6 @@ public class SectionsActivity extends Activity {
 
                 //Get Replacement Thumbnail
                 article.setThumbnail(getRandomThumbnailFromSectionTitle(title));
-
             }
 
             LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -123,6 +133,7 @@ public class SectionsActivity extends Activity {
                     .Builder()
                     .cacheOnDisk(true)
                     .cacheInMemory(true)
+                    .showImageOnLoading(R.drawable.logo)
                     .preProcessor(new BitmapProcessor() {
                         @Override
                         public Bitmap process(Bitmap bitmap) {
@@ -152,7 +163,6 @@ public class SectionsActivity extends Activity {
             ImageView imgThombnail = (ImageView) rowView.findViewById(R.id.thumbnail);
 
             if ((article.getThumbnail() != null) && (article.getThumbnail().startsWith("http"))){
-                //new DownloadImageTask(this,  imgThombnail).execute(article.getThumbnail());
                 ImageLoader.getInstance().displayImage(article.getThumbnail(), imgThombnail, displayImageOptions);
             } else {
                 imgThombnail.setImageResource(R.drawable.logo);
@@ -164,12 +174,17 @@ public class SectionsActivity extends Activity {
 
             txtNombre.setMaxLines(1);
             txtNombre.setEllipsize(TextUtils.TruncateAt.END);
-            txtNombre.setText(article.getTitle()); // + " " + String.valueOf(article.getWikiaId()));
+            txtNombre.setText(title); // + " " + String.valueOf(article.getWikiaId()));
 
             TextView txtAlias = (TextView) rowView.findViewById(R.id.alias);
             txtAlias.setText(article.getTeaser());
 
             linearLayout.addView(rowView);
+
+            if (article.getTeaser() == null || article.getTeaser().length() == 0){
+                txtNombre.setGravity(Gravity.CENTER_VERTICAL);
+                txtAlias.setVisibility(View.GONE);
+            }
 
             final long finalId = article.getId();
             final String finalTitle = title;
@@ -181,12 +196,12 @@ public class SectionsActivity extends Activity {
 
                     Intent intent = null;
 
-                    if (getResources().getIdentifier(finalTitle.replace(" ", "").toLowerCase(), "array", finalPackageName) != 0){
+                    if (getResources().getIdentifier(finalTitle.replace(" ", "").toLowerCase(), "array", finalPackageName) != 0) {
                         intent = new Intent(SectionsActivity.this, SectionsActivity.class);
                         intent.putExtra("section", finalTitle);
 
                         startActivity(intent);
-                    } else if (finalId != 0)  {
+                    } else if (finalId != 0) {
                         intent = new Intent(SectionsActivity.this, ArticleView.class);
                         intent.putExtra("title", finalTitle);
 

@@ -8,51 +8,51 @@
     </facet>
     <facet type="android" name="Android">
       <configuration>
-        <option name="SELECTED_BUILD_VARIANT" value="arrowRelease" />
+        <option name="SELECTED_BUILD_VARIANT" value="agentsOfShieldRelease" />
         <option name="SELECTED_TEST_ARTIFACT" value="_android_test_" />
-        <option name="ASSEMBLE_TASK_NAME" value="assembleArrowRelease" />
-        <option name="COMPILE_JAVA_TASK_NAME" value="compileArrowReleaseSources" />
-        <option name="SOURCE_GEN_TASK_NAME" value="generateArrowReleaseSources" />
+        <option name="ASSEMBLE_TASK_NAME" value="assembleAgentsOfShieldRelease" />
+        <option name="COMPILE_JAVA_TASK_NAME" value="compileAgentsOfShieldReleaseSources" />
+        <option name="SOURCE_GEN_TASK_NAME" value="generateAgentsOfShieldReleaseSources" />
         <option name="ALLOW_USER_CONFIGURATION" value="false" />
         <option name="MANIFEST_FILE_RELATIVE_PATH" value="/src/main/AndroidManifest.xml" />
         <option name="RES_FOLDER_RELATIVE_PATH" value="/src/main/res" />
-        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/main/res;file://$MODULE_DIR$/src/arrow/res" />
+        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/main/res;file://$MODULE_DIR$/src/agentsOfShield/res" />
         <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/src/main/assets" />
       </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="false">
-    <output url="file://$MODULE_DIR$/build/intermediates/classes/arrow/release" />
-    <output-test url="file://$MODULE_DIR$/build/intermediates/classes/test/production/debug" />
+    <output url="file://$MODULE_DIR$/build/intermediates/classes/agentsOfShield/release" />
+    <output-test url="file://$MODULE_DIR$/build/intermediates/classes/test/agentsOfShield/debug" />
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/r/arrow/release" isTestSource="false" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/aidl/arrow/release" isTestSource="false" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/buildConfig/arrow/release" isTestSource="false" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/rs/arrow/release" isTestSource="false" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/rs/arrow/release" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/generated/arrow/release" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/arrowRelease/res" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/arrowRelease/resources" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/arrowRelease/assets" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/arrowRelease/aidl" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/arrowRelease/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/arrowRelease/jni" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/arrowRelease/rs" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/arrow/res" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/arrow/resources" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/arrow/assets" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/arrow/aidl" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/arrow/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/arrow/jni" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/arrow/rs" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestArrow/res" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestArrow/resources" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestArrow/assets" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestArrow/aidl" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestArrow/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestArrow/jni" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestArrow/rs" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/r/agentsOfShield/release" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/aidl/agentsOfShield/release" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/buildConfig/agentsOfShield/release" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/rs/agentsOfShield/release" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/rs/agentsOfShield/release" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/generated/agentsOfShield/release" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/agentsOfShieldRelease/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/agentsOfShieldRelease/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/agentsOfShieldRelease/assets" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/agentsOfShieldRelease/aidl" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/agentsOfShieldRelease/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/agentsOfShieldRelease/jni" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/agentsOfShieldRelease/rs" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/agentsOfShield/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/agentsOfShield/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/agentsOfShield/assets" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/agentsOfShield/aidl" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/agentsOfShield/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/agentsOfShield/jni" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/agentsOfShield/rs" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestAgentsOfShield/res" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestAgentsOfShield/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestAgentsOfShield/assets" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestAgentsOfShield/aidl" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestAgentsOfShield/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestAgentsOfShield/jni" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestAgentsOfShield/rs" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/release/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/release/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/release/assets" type="java-resource" />
@@ -102,8 +102,8 @@
     <orderEntry type="library" exported="" name="support-v4-19.1.0" level="project" />
     <orderEntry type="library" exported="" name="library-1.0.5" level="project" />
     <orderEntry type="library" exported="" name="universal-image-loader-1.9.3" level="project" />
+    <orderEntry type="library" exported="" name="StartAppInApp-3.0.2" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-19.0.1" level="project" />
-    <orderEntry type="library" exported="" name="StartAppInApp-2.3.1" level="project" />
     <orderEntry type="library" exported="" name="gridlayout-v7-19.0.1" level="project" />
   </component>
 </module>

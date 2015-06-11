@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sections">
+        <item>Main Characters|||logo</item>
+        <item>Recurring Characters|||logo</item>
+        <item>Season One Episodes|||logo</item>
+        <item>Season Two Episodes|||logo</item>
+    </string-array>
+
+    <string-array name="maincharacters">
+        <item>Skye</item>
+        <item>Grant Ward</item>
+        <item>Melinda  May</item>
+        <item>Phillip Coulson</item>
+        <item>Jemma Simmons</item>
+        <item>Leopold \"Leo\" Fitz</item>
+        <item>Barbara \"Bobbi\" Morse</item>
+        <item>Lance Hunter</item>
+    </string-array>
+
+    <string-array name="recurringcharacters">
+        <item>Raina</item>
+        <item>Jiaying</item>
+        <item>Calvin Zabo</item>
+        <item>Michael \"Mike\" Peterson</item>
+        <item>Gordon</item>
+        <item>Agent 33</item>
+        <item>John Garrett</item>
+        <item>Antoine \"Trip\" Triplett</item>
+        <item>Sunil Bakshi</item>
+        <item>The Clairvoyant</item>
+        <item>Maria Hill</item>
+        <item>Alphonso \"Mack\" Mackenzie</item>
+        <item>Nicholas Joseph \"Nick\" Fury</item>
+        <item>Victoria Hand</item>
+        <item>Daniel Whitehall</item>
+        <item>Jasper Sitwell</item>
+        <item>Billy Koenig</item>
+        <item>Eric Koenig</item>
+        <item>Ian Quinn</item>
+        <item>Donald Gill</item>
+        <item>Carl Creel</item>
+        <item>Robert Gonzales</item>
+        <item>Anne Weaver</item>
+        <item>Christian Ward</item>
+        <item>Glenn Talbot</item>
+        <item>Audrey Nathan</item>
+        <item>Felix Blake</item>
+        <item>Marcus Daniels</item>
+        <item>Debbie</item>
+        <item>Edison Po</item>
+        <item>Ace Peterson</item>
+        <item>Bill Paxton</item>
+        <item>Camilla Reyes</item>
+        <item>Shaw</item>
+        <item>T. Vanchat</item>
+        <item>J. Streiten</item>
+        <item>Ray Walter Krzeminski</item>
+        <item>Shade</item>
+        <item>Kenneth Turgeon</item>
+    </string-array>
+
+    <string-array name="seasononeepisodes">
+        <item>Pilot</item>
+        <item>0-8-4</item>
+        <item>The Asset</item>
+        <item>Eye-Spy</item>
+        <item>Girl in the Flower Dress</item>
+        <item>FZZT</item>
+        <item>The Hub</item>
+        <item>The Well</item>
+        <item>Repairs</item>
+        <item>The Bridge</item>
+        <item>The Magical Place</item>
+        <item>Seeds</item>
+        <item>T.R.A.C.K.S.</item>
+        <item>T.A.H.I.T.I.</item>
+        <item>Yes Men</item>
+        <item>End Of The Beginning</item>
+        <item>Turn, Turn, Turn</item>
+        <item>Providence</item>
+        <item>The Only Light in the Darkness</item>
+        <item>Nothing Personal</item>
+        <item>Ragtag</item>
+        <item>Beginning of the End</item>
+    </string-array>
+
+    <string-array name="seasontwoepisodes">
+        <item>Shadows</item>
+        <item>Heavy is the Head</item>
+        <item>Making Friends and Influencing People</item>
+        <item>Face My Enemy</item>
+        <item>A Hen in the Wolf House</item>
+        <item>A Fractured House</item>
+        <item>The Writing on the Wall</item>
+        <item>The Things We Bury</item>
+        <item>Ye Who Enter Here</item>
+        <item>What They Become</item>
+        <item>Aftershocks</item>
+        <item>Who You Really Are</item>
+        <item>One of Us</item>
+        <item>Love in the Time of Hydra</item>
+        <item>One Door Closes</item>
+        <item>Afterlife</item>
+        <item>Melinda</item>
+        <item>The Frenemy of My Enemy</item>
+        <item>The Dirty Half Dozen</item>
+        <item>Scars</item>
+        <item>S.O.S. Part One</item>
+        <item>S.O.S. Part Two</item>
+    </string-array>
+</resources>

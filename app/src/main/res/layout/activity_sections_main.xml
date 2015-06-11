@@ -1,0 +1,38 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:context="${packageName}.${activityClass}">
+
+    <com.startapp.android.publish.banner.Banner
+        android:id="@+id/startAppBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+
+        android:layout_above="@+id/startAppBanner">
+
+        <LinearLayout
+            android:id="@+id/Sections"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!-- Content here -->
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:src="@drawable/main_section_image"
+                android:adjustViewBounds="true"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</RelativeLayout>

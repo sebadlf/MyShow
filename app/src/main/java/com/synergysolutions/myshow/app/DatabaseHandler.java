@@ -2,6 +2,7 @@ package com.synergysolutions.myshow.app;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -27,7 +28,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = BuildConfig.VERSION_CODE;
 
     // Database Name
     private static final String DATABASE_NAME = "MyShow";
