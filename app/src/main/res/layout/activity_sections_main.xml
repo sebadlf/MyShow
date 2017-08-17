@@ -24,13 +24,6 @@
             android:orientation="vertical">
             <!-- Content here -->
 
-            <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:src="@drawable/main_section_image"
-                android:adjustViewBounds="true"
-                android:layout_gravity="center"/>
-
         </LinearLayout>
     </ScrollView>
 
